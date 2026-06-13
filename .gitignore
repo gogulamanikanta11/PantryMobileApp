@@ -48,3 +48,5 @@ test_*.txt
 *.zip
 docx_extracted/
 tsc_output.txt
+docs/*.xlsx
+docs/*.xls
