@@ -42,11 +42,16 @@ export default function RegisterScreen() {
       const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
       console.log("Success! User ID:", userCredential.user.uid);
 
-      Alert.alert(
-        'Success',
-        'Account created successfully!',
-        [{ text: 'OK', onPress: () => router.replace('/login') }]
-      );
+      if (Platform.OS === 'web') {
+        window.alert('Account created successfully!');
+        router.replace('/login');
+      } else {
+        Alert.alert(
+          'Success',
+          'Account created successfully!',
+          [{ text: 'OK', onPress: () => router.replace('/login') }]
+        );
+      }
     } catch (err: any) {
       console.error("Firebase Auth Error:", err.code, err.message);
 

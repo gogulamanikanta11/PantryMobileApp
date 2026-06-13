@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Platform,
 } from 'react-native';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../backend/firebase/config';
@@ -22,11 +23,16 @@ export default function ForgotPasswordScreen() {
 
     try {
       await sendPasswordResetEmail(auth, email.trim());
-      Alert.alert(
-        'Success',
-        'Password reset email sent! Please check your inbox.',
-        [{ text: 'OK', onPress: () => router.back() }]
-      );
+      if (Platform.OS === 'web') {
+        window.alert('Password reset email sent! Please check your inbox.');
+        router.back();
+      } else {
+        Alert.alert(
+          'Success',
+          'Password reset email sent! Please check your inbox.',
+          [{ text: 'OK', onPress: () => router.back() }]
+        );
+      }
     } catch (error: any) {
       console.log('RESET ERROR:', error);
       Alert.alert('Error', error?.message || 'Failed to send reset email');
