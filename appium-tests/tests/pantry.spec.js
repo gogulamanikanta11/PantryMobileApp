@@ -129,7 +129,6 @@ describe('Smart Pantry Android - Complete Native E2E Appium Test Suite', () => {
     it(`${scenario.id} [${scenario.cat}]: ${scenario.name} - ${scenario.desc}`, async () => {
       // In this Appium native Android script, these mock tests assert mobile element structural readiness
       // based on accessibility ID selectors (~ accessibility labels).
-      const element = await $(`~${scenario.id.toLowerCase()}`);
       if (scenario.id === 'MOB-001') {
         const loginScreen = await $('~login-screen');
         await expect(loginScreen).toBeDisplayed();

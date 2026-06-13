@@ -1,7 +1,6 @@
 import React, {
 useEffect,
-useState,
-useContext
+useState
 } from 'react';
 
 import {
@@ -24,10 +23,6 @@ import { db } from '../backend/firebase/config';
 
 import { router } from 'expo-router';
 
-import {
-ThemeContext
-} from '../context/ThemeContext';
-
 import { LinearGradient } from 'expo-linear-gradient';
 
 import {
@@ -36,12 +31,6 @@ Ionicons
 import { COLORS } from '../constants/theme';
 
 export default function PantryScreen() {
-
-const {
-dark
-} = useContext(
-ThemeContext
-);
 
 const [items,setItems]=useState<any[]>([]);
 

@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { collection, getDocs, addDoc, query, where, deleteDoc, doc } from 'firebase/firestore';
-import { db, auth } from '../backend/firebase/config';
+import { collection, getDocs, addDoc, query, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../backend/firebase/config';
 
 export default function ShoppingListScreen() {
   const [items, setItems] = useState<any[]>([]);
@@ -46,7 +46,7 @@ export default function ShoppingListScreen() {
       });
       setNewItem('');
       fetchShoppingList();
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to add item');
     }
   };
@@ -61,7 +61,7 @@ export default function ShoppingListScreen() {
     try {
       await deleteDoc(doc(db, 'shoppingList', id));
       fetchShoppingList();
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to delete item');
     }
   };

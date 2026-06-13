@@ -19,7 +19,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default function ProfileScreen() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState(auth.currentUser?.email || '');
+  const email = auth.currentUser?.email || '';
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
 

@@ -128,7 +128,6 @@ describe('Smart Pantry Web - Complete E2E Selenium Test Suite', () => {
     it(`${scenario.id} [${scenario.cat}]: ${scenario.name} - ${scenario.desc}`, async () => {
       // In this WebdriverIO Selenium script, these mock tests assert UI element structural readiness 
       // based on the test parameters mapped to DOM nodes.
-      const isLoginRoute = (await browser.getUrl()).includes('/login');
       if (scenario.id === 'WEB-001') {
         expect(browser).toBeDefined();
       } else if (scenario.id === 'WEB-002') {

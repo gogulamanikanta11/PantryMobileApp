@@ -27,7 +27,9 @@ const getAuthInstance = () => {
     });
   } else {
     // Only import native modules when running on Native platforms
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { getReactNativePersistence } = require('firebase/auth');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const AsyncStorage = require('@react-native-async-storage/async-storage').default;
     return initializeAuth(app, {
       persistence: getReactNativePersistence(AsyncStorage)

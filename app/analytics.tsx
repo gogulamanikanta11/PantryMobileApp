@@ -4,14 +4,11 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../backend/firebase/config';
 import { Ionicons } from '@expo/vector-icons';
-
-const { width } = Dimensions.get('window');
 
 export default function AnalyticsScreen() {
   const [stats, setStats] = useState({
@@ -63,7 +60,7 @@ export default function AnalyticsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.title}>Impact Insights</Text>
-        <Text style={styles.subtitle}>Your pantry's financial & eco footprint</Text>
+        <Text style={styles.subtitle}>Your pantry&apos;s financial & eco footprint</Text>
 
         {/* Financial Loss Warning (New Market Feature) */}
         <View style={[styles.glassCard, { borderColor: '#EF444455' }]}>

@@ -108,7 +108,7 @@ export default function LoginScreen() {
         await AsyncStorage.setItem('user', phoneNumber);
         router.replace('/(tabs)');
       }
-    } catch (err: any) {
+    } catch {
       setError('Invalid OTP code. Please try again.');
     } finally {
       setLoading(false);
@@ -224,7 +224,7 @@ export default function LoginScreen() {
 
           <View style={styles.footer}>
             <TouchableOpacity onPress={() => router.push('/register')}>
-              <Text style={styles.footerLink}>Don't have an account? Sign Up</Text>
+              <Text style={styles.footerLink}>Don&apos;t have an account? Sign Up</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/forgot-password')} style={{ marginTop: 15 }}>
               <Text style={[styles.footerLink, { color: '#EF4444' }]}>Forgot Password?</Text>
