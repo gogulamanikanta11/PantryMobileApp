@@ -8,7 +8,11 @@ exports.config = {
     capabilities: [{
         browserName: 'chrome',
         'goog:chromeOptions': {
-            args: ['--disable-gpu', '--no-sandbox']
+            args: [
+                '--disable-gpu',
+                '--no-sandbox',
+                ...(process.env.CI ? ['--headless', '--disable-dev-shm-usage'] : [])
+            ]
         }
     }],
     logLevel: 'info',

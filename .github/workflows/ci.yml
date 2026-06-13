@@ -70,3 +70,42 @@ jobs:
 
       - name: Build Web Bundle
         run: npm run web -- --non-interactive --minify
+
+  e2e-tests:
+    name: Run Web E2E Tests (Selenium)
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, unit-tests]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-cache: 'npm'
+          node-version: '20'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Install web-tests dependencies
+        run: |
+          cd web-tests
+          npm install
+
+      - name: Start Expo Web Server
+        run: |
+          npx expo start --web --non-interactive &
+
+      - name: Wait for Expo Web Server
+        run: |
+          until curl -s http://localhost:8081 > /dev/null; do
+            echo "Waiting for web server to start on port 8081..."
+            sleep 3
+          done
+          echo "Server is up!"
+
+      - name: Run Web E2E Tests
+        run: |
+          cd web-tests
+          npx wdio run wdio.conf.js
