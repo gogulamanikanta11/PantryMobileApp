@@ -17,11 +17,11 @@ collection,
 getDocs
 } from 'firebase/firestore';
 
-import { db } from '../firebase/config';
+import { db } from '../backend/firebase/config';
 
 import {
 sendNotification
-} from '../utils/notifications';
+} from '../backend/utils/notifications';
 
 export default function AlertsScreen(){
 
@@ -82,7 +82,7 @@ colors={['#0B1020','#151B2F','#1E293B']}
 style={{flex:1}}
 >
 
-<ScrollView style={styles.container}>
+<ScrollView style={styles.container} testID="alerts-screen">
 
 <Text style={styles.title}>
 ⚠️ Expiry Alerts
@@ -90,7 +90,7 @@ style={{flex:1}}
 
 {alerts.length === 0 ? (
 
-<View style={styles.emptyCard}>
+<View style={styles.emptyCard} testID="no-alerts-view">
 
 <Text style={styles.noAlert}>
 ✅ No Expiry Alerts
@@ -109,13 +109,14 @@ alerts.map((item,index)=>(
 <View
 key={index}
 style={styles.card}
+testID={`alert-card-${index}`}
 >
 
-<Text style={styles.item}>
+<Text style={styles.item} testID={`alert-item-name-${index}`}>
 🛒 {item.name}
 </Text>
 
-<Text style={styles.expiry}>
+<Text style={styles.expiry} testID={`alert-item-expiry-${index}`}>
 Expires in {item.expiry} days
 </Text>
 

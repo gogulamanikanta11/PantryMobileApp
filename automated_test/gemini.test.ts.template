@@ -1,0 +1,57 @@
+import { generateRecipe } from '../backend/services/gemini';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// Mock the GoogleGenerativeAI SDK
+jest.mock('@google/generative-ai', () => {
+  const mockGenerateContent = jest.fn();
+  const mockGetGenerativeModel = jest.fn(() => ({
+    generateContent: mockGenerateContent,
+  }));
+  return {
+    GoogleGenerativeAI: jest.fn().mockImplementation(() => ({
+      getGenerativeModel: mockGetGenerativeModel,
+    })),
+    // Export these mocks for assertions in individual tests
+    _mockGenerateContent: mockGenerateContent,
+    _mockGetGenerativeModel: mockGetGenerativeModel,
+  };
+});
+
+const { _mockGenerateContent } = require('@google/generative-ai') as any;
+
+describe('Gemini Recipe Generator Service', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return warning message if ingredients list is empty', async () => {
+    const response = await generateRecipe([]);
+    expect(response).toBe('No ingredients found in pantry.');
+  });
+
+  it('should format prompt and request recipe generation from Gemini model', async () => {
+    const mockIngredients = ['Eggs', 'Milk', 'Rice'];
+    _mockGenerateContent.mockResolvedValueOnce({
+      response: {
+        text: () => 'Mocked Recipe: Fried Rice with Egg Drop Soup',
+      },
+    });
+
+    const result = await generateRecipe(mockIngredients);
+
+    expect(result).toBe('Mocked Recipe: Fried Rice with Egg Drop Soup');
+    expect(_mockGenerateContent).toHaveBeenCalledTimes(1);
+    expect(_mockGenerateContent).toHaveBeenCalledWith(
+      expect.stringContaining('Eggs, Milk, Rice')
+    );
+  });
+
+  it('should handle service errors gracefully and return descriptive message', async () => {
+    _mockGenerateContent.mockRejectedValueOnce(new Error('Quota Limit Exceeded'));
+
+    const result = await generateRecipe(['Apples']);
+
+    expect(result).toContain('Gemini Error');
+    expect(result).toContain('Quota Limit Exceeded');
+  });
+});

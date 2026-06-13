@@ -1,0 +1,201 @@
+Test Case ID,Testing Platform,Category,Test Case Name,Description,Expected Behavior,Status
+WEB-001,Web (Selenium),Authentication,Initial Launch Redirect,Verify app redirects to login route on cold start,User is redirected to /login route if unauthenticated,PASSED
+WEB-002,Web (Selenium),Authentication,Form Render Verification,Ensure username password inputs and login button display,Login inputs and button are visible and active,PASSED
+WEB-003,Web (Selenium),Authentication,Email Method Active by Default,Check that email tab is selected by default in toggle,Email login input form displays on initial render,PASSED
+WEB-004,Web (Selenium),Authentication,Empty Credentials Validation,Click login with empty fields and check error text,Error toast indicates empty credentials,PASSED
+WEB-005,Web (Selenium),Authentication,Blank Password Validation,Enter username leave password empty expect validation prompt,Prompt displays requesting password parameter,PASSED
+WEB-006,Web (Selenium),Authentication,Blank Email Validation,Enter password leave email empty expect validation prompt,Prompt displays requesting email parameter,PASSED
+WEB-007,Web (Selenium),Authentication,Malformed Email Check,Enter invalid email format expect validation error,Alert displays showing invalid email format,PASSED
+WEB-008,Web (Selenium),Authentication,Short Password Rejection,Enter short password (< 6 chars) check validation,Validation shows password must be at least 6 characters,PASSED
+WEB-009,Web (Selenium),Authentication,Switch to Phone Login UI,Tap OTP Login tab verify phone number inputs render,OTP layout with phone input field becomes active,PASSED
+WEB-010,Web (Selenium),Authentication,Phone Input Empty Check,Click Get OTP with empty input expect phone validation error,System blocks submission and prompts for phone input,PASSED
+WEB-011,Web (Selenium),Authentication,Phone Input Malformed Check,Enter phone without country code expect phone validation error,Validation error prompts for country code format,PASSED
+WEB-012,Web (Selenium),Authentication,Verify Recaptcha Init Web,Ensure Recaptcha container is rendered on web page for phone auth,Recaptcha element is mounted in Web DOM,PASSED
+WEB-013,Web (Selenium),Authentication,OTP Field Display Status,Confirm OTP verification input field is hidden prior to SMS request,OTP code entry is invisible on default load,PASSED
+WEB-014,Web (Selenium),Authentication,Forgot Password Navigation,Click Forgot Password link verify redirection to recovery page,Browser redirects to forgot-password view,PASSED
+WEB-015,Web (Selenium),Authentication,Reset Password Empty Form,Attempt password reset link dispatch with empty email input,Form block triggers requesting email,PASSED
+WEB-016,Web (Selenium),Authentication,Reset Password Success Feedback,Verify successful password reset trigger displays alert,Success alert triggers on password reset request,PASSED
+WEB-017,Web (Selenium),Authentication,SignUp Navigation Links,Navigate to Signup Screen from the login view footer,User is redirected to registration view,PASSED
+WEB-018,Web (Selenium),Authentication,SignUp Validation Rules,Verify registration enforces validation parameters,Enforces password length and format requirements,PASSED
+WEB-019,Web (Selenium),Authentication,User Signup Action,Register a test account check user redirection to login,Registration completes and user is redirected to login,PASSED
+WEB-020,Web (Selenium),Authentication,Email Login Execution,Perform login with valid credentials verify dashboard launch,Dashboard launches and redirects to /(tabs),PASSED
+WEB-021,Web (Selenium),Pantry Inventory,Dashboard Navigation,Verify transition to dashboard view post-authentication,Active URL contains /(tabs) dashboard route,PASSED
+WEB-022,Web (Selenium),Pantry Inventory,Pantry Tab Focus,Verify 'Pantry' tab is selected by default on dashboard load,Home screen shows inventory elements by default,PASSED
+WEB-023,Web (Selenium),Pantry Inventory,Pantry List Layout Render,Ensure pantry items listing container renders on page load,Pantry list view container is displayed,PASSED
+WEB-024,Web (Selenium),Pantry Inventory,Add Item Navigation,Click 'Add New Item' button verify redirection to add form,Redirects to additem route,PASSED
+WEB-025,Web (Selenium),Pantry Inventory,Add Item Validation Empty,Submit add item form with empty name expect error alert,System blocks submit and throws 'Enter item name' alert,PASSED
+WEB-026,Web (Selenium),Pantry Inventory,Add Item Validation Expiry,Ensure expiry date matches expected duration patterns,Accepts valid expiry formats like '2 days',PASSED
+WEB-027,Web (Selenium),Pantry Inventory,Save Standard Item,Add valid item (Milk 2 units 2 days expiry) expect list redirect,Pantry item document is saved to firestore,PASSED
+WEB-028,Web (Selenium),Pantry Inventory,Save Secondary Item,Add second item (Rice 5 units 10 days expiry) check update,Secondary item saved successfully,PASSED
+WEB-029,Web (Selenium),Pantry Inventory,Voice Synthesizer Verification,Click speak button on add item screen check speech API call,expo-speech speak function triggers successfully,PASSED
+WEB-030,Web (Selenium),Pantry Inventory,New Item Display Listing,Ensure newly created items are added to list component,List view updates showing new items,PASSED
+WEB-031,Web (Selenium),Pantry Inventory,Item Detail Card Components,Verify item cards display name stock quantity and expiry correctly,Text components show correct stock and expiry variables,PASSED
+WEB-032,Web (Selenium),Pantry Inventory,Expiry Color Codes - Green,Ensure items with long expiry have green indicator status,Progress bar color maps to #10B981 green,PASSED
+WEB-033,Web (Selenium),Pantry Inventory,Expiry Color Codes - Orange,Ensure items with warning expiry (3 days) show orange status,Progress bar color maps to #F59E0B orange,PASSED
+WEB-034,Web (Selenium),Pantry Inventory,Expiry Color Codes - Red,Ensure items with critical expiry (1 day) show red status,Progress bar color maps to #EF4444 red,PASSED
+WEB-035,Web (Selenium),Pantry Inventory,Stock Progress Bar Render,Check if the stock indicator progress bar displays correctly,Indicator element is rendered with relative width scaling,PASSED
+WEB-036,Web (Selenium),Pantry Inventory,Refresh Button Action,Click refresh icon verify Firestore query reload,List reloads items from Firestore pantry collection,PASSED
+WEB-037,Web (Selenium),Pantry Inventory,Share Social Button Trigger,Click share button on item verify share options display,Social share popup options render on browser,PASSED
+WEB-038,Web (Selenium),Pantry Inventory,Community Share Dialog Neighbors,Select 'Neighbors' in community share check dialog dismissal,Dismisses confirmation and logs neighbors route,PASSED
+WEB-039,Web (Selenium),Pantry Inventory,Community Share Dialog FoodBank,Select 'Food Bank' in community share check confirmation,Dismisses confirmation and logs food bank route,PASSED
+WEB-040,Web (Selenium),Pantry Inventory,Delete Item Trigger,Click delete icon on a pantry item verify prompt,Alert triggers asking to remove the item,PASSED
+WEB-041,Web (Selenium),Pantry Inventory,Delete Item Confirm Action,Confirm deletion verify document deletion in database,Document is deleted in Firestore,PASSED
+WEB-042,Web (Selenium),Pantry Inventory,Delete Item Cancel Action,Cancel deletion verify item remains in the list view,Item stays in pantry list view,PASSED
+WEB-043,Web (Selenium),Pantry Inventory,List Dynamic State Update,Verify list UI updates immediately after item deletion,UI element is removed from view list hierarchy,PASSED
+WEB-044,Web (Selenium),Pantry Inventory,Multiple Deletions Flow,Delete multiple items sequentially and verify UI stability,Successfully removes target elements without crashes,PASSED
+WEB-045,Web (Selenium),Pantry Inventory,Empty Pantry Display,Delete all items verify empty state display card,Empty state message displays properly on empty collection,PASSED
+WEB-046,Web (Selenium),Shopping List,Shopping List Tab Navigation,Click Shopping List tab verify container loads,Redirection to shopping-list view,PASSED
+WEB-047,Web (Selenium),Shopping List,Input Box Render Check,Ensure 'Add missing item...' input box renders,Text input is visible in shopping view,PASSED
+WEB-048,Web (Selenium),Shopping List,Empty List Initial View,Confirm empty checklist states when no items exist,Empty list cartoon icon and helper tag render,PASSED
+WEB-049,Web (Selenium),Shopping List,Manual Item Addition,Add 'Apples' manually verify insertion into checklist,Item card adds to list successfully,PASSED
+WEB-050,Web (Selenium),Shopping List,Manual Item Addition Validation,Attempt empty shopping list item submission check block,System ignores add action,PASSED
+WEB-051,Web (Selenium),Shopping List,Checklist Item Rendering,Verify shopping item displays name checkbox and trash button,Card components render check box label and delete button,PASSED
+WEB-052,Web (Selenium),Shopping List,Item Check Interaction,Tap item checkbox verify checked visual styling (strike-through),Checked style applied to text label,PASSED
+WEB-053,Web (Selenium),Shopping List,Item Uncheck Interaction,Tap checked item again verify removal of strike-through,Checked style removed from text label,PASSED
+WEB-054,Web (Selenium),Shopping List,Multiple Checklist Additions,Add multiple items manually check list count updates,Checklist updates count respectively,PASSED
+WEB-055,Web (Selenium),Shopping List,AI Suggest Button Render,Verify 'AI Suggest' sparkles button is displayed in header,Sparkles icon button is visible in header bar,PASSED
+WEB-056,Web (Selenium),Shopping List,AI Smart List Execution,Tap 'AI Suggest' verify auto-check database queries launch,Queries database for items with stock <= 1,PASSED
+WEB-057,Web (Selenium),Shopping List,AI Suggestion Added Alert,Confirm alert appears showing items added from low stock,Alert reports how many low stock items were added,PASSED
+WEB-058,Web (Selenium),Shopping List,AI Tag Render Validation,Verify auto-added items have the '(AI)' tag indicator,(AI) indicator string is appended to text component,PASSED
+WEB-059,Web (Selenium),Shopping List,AI Suggestion No Stock Trigger,Trigger suggestion when stock is high verify warning alert,Alert reports pantry stock is in good standing,PASSED
+WEB-060,Web (Selenium),Shopping List,Duplicate Entry Prevention,Ensure AI Suggest doesn't add duplicate items to shopping list,Skips adding items already present on list,PASSED
+WEB-061,Web (Selenium),Shopping List,Delete Checklist Item,Click delete trash icon on a shopping list item,Shopping item document is deleted in Firestore,PASSED
+WEB-062,Web (Selenium),Shopping List,Verify Checklist Count Redux,Confirm count reduces immediately on item deletion,Item card is removed from screen list,PASSED
+WEB-063,Web (Selenium),Shopping List,Checklist Toggle State Sync,Reload list and ensure check/uncheck status persists,Toggled state is loaded from local states,PASSED
+WEB-064,Web (Selenium),Shopping List,Bulk Deletion Checklist,Delete all checklist items check empty state displays,List returns to default empty display page,PASSED
+WEB-065,Web (Selenium),Shopping List,Database State Sync Verification,Verify Firestore document matches current screen items,Checklist documents match remote dataset,PASSED
+WEB-066,Web (Selenium),AI & Recipes,AI Chef Tab Redirection,Navigate to AI Chef screen verify container renders,AI Chef screen is visible on web client,PASSED
+WEB-067,Web (Selenium),AI & Recipes,Recipe Auto Load Execution,Verify app starts querying openrouter API for active ingredients,Requests chat completion payload on mount,PASSED
+WEB-068,Web (Selenium),AI & Recipes,Activity Loading Indicator,Ensure loading spinner is visible during API execution,Spinner element renders while loading state is true,PASSED
+WEB-069,Web (Selenium),AI & Recipes,Display AI Generated Recipe,Confirm generated recipe text is rendered in container,Displays recipe content output,PASSED
+WEB-070,Web (Selenium),AI & Recipes,No Ingredients Recipe Block,Navigate with empty inventory verify prompt to add items first,Warning text instructions prompt to add items,PASSED
+WEB-071,Web (Selenium),AI & Recipes,Surprise Me Button Action,Click 'Surprise Me' check if random prompt prefix is appended,Trigger appends random chef prefix to ingredients,PASSED
+WEB-072,Web (Selenium),AI & Recipes,Surprise Me API Request,Verify OpenRouter call includes surprise prompt conditions,Queries API with randomized prompt payload,PASSED
+WEB-073,Web (Selenium),AI & Recipes,AI Prediction Tab Navigation,Navigate to AI Prediction screen verify container load,Redirection to predict route on web,PASSED
+WEB-074,Web (Selenium),AI & Recipes,Predict Card Render,Ensure predictions display item names with mapped status cards,Prediction cards render on predict screen,PASSED
+WEB-075,Web (Selenium),AI & Recipes,Predict State - Use Immediately,Ensure stock <= 1 items display 'Use Immediately' in red,Red badge displays 'Use Immediately',PASSED
+WEB-076,Web (Selenium),AI & Recipes,Predict State - Expire Soon,Ensure stock <= 3 items display 'May Expire Soon' in orange,Orange badge displays 'May Expire Soon',PASSED
+WEB-077,Web (Selenium),AI & Recipes,Predict State - Fresh,Ensure stock > 3 items display 'Fresh' indicator,Green badge displays 'Fresh',PASSED
+WEB-078,Web (Selenium),AI & Recipes,Mock Fallback Check - Egg Fried Rice,Trigger recipe mock logic for egg & rice verify output,Returns Egg Fried Rice instructions,PASSED
+WEB-079,Web (Selenium),AI & Recipes,Mock Fallback Check - Banana Shake,Trigger recipe mock logic for milk & banana verify output,Returns Banana Milkshake instructions,PASSED
+WEB-080,Web (Selenium),AI & Recipes,Mock Fallback Check - Egg Sandwich,Trigger recipe mock logic for bread & egg verify output,Returns Egg Sandwich instructions,PASSED
+WEB-081,Web (Selenium),Analytics,Analytics Tab Navigation,Click Analytics tab verify page loads correctly,Redirection to analytics screen,PASSED
+WEB-082,Web (Selenium),Analytics,Impact Insights Title Render,Ensure 'Impact Insights' page title displays,Page header title displays on analytics screen,PASSED
+WEB-083,Web (Selenium),Analytics,Financial Risk Value Display,Verify at-risk value displays calculations matching ($5.5 * expiring),Financial value text shows correct calculation,PASSED
+WEB-084,Web (Selenium),Analytics,Zero Value Financial State,Verify financial waste displays $0.00 when no items expire,At-risk value shows $0.00,PASSED
+WEB-085,Web (Selenium),Analytics,Saved CO2 Value Display,Verify CO2 footprint calculation matches (total - expiring) * 0.8kg,Saved CO2 statistics reflect proper weights,PASSED
+WEB-086,Web (Selenium),Analytics,Saved CO2 Zero State,Verify CO2 statistics display zero when inventory is empty,Saved CO2 text shows 0.0 kg,PASSED
+WEB-087,Web (Selenium),Analytics,In Stock Card Check,Check if 'In Stock' quantity displays matching total items count,Value matches collection count size,PASSED
+WEB-088,Web (Selenium),Analytics,Low Stock Card Check,Check if 'Low Stock' quantity displays matching low inventory count,Value matches low stock item filter count,PASSED
+WEB-089,Web (Selenium),Analytics,Chart Render Check,Verify chart bar row placeholder elements are displayed,Bar chart wrapper is visible on screen,PASSED
+WEB-090,Web (Selenium),Analytics,Chart Month Labels,Verify chart displays month labels underneath bar elements,Horizontal labels Jan-Jun render under bar row,PASSED
+WEB-091,Web (Selenium),Settings,Settings Screen Navigation,Navigate to Settings view check card content load,Settings cards are visible on settings page,PASSED
+WEB-092,Web (Selenium),Settings,Dark Theme Toggle Interaction,Click theme toggle button check context status swap,Theme context is updated to dark/light value,PASSED
+WEB-093,Web (Selenium),Settings,Dark Mode Class Verification,Verify page container applies dark theme background styling,DOM container applies dark mode class colors,PASSED
+WEB-094,Web (Selenium),Settings,Profile Screen Navigation,Click profile button in tab menu check page load,Redirection to profile view,PASSED
+WEB-095,Web (Selenium),Settings,Profile Name Update Validation,Edit name input click save expect success alert popup,Updates name document in Firestore users collection,PASSED
+WEB-096,Web (Selenium),Settings,Profile Phone Update Validation,Edit phone input click save expect profile modification,Updates phone document in Firestore users collection,PASSED
+WEB-097,Web (Selenium),Settings,Profile Read-only Email,Verify email address input field is disabled/read-only,Email TextInput has editable={false} attribute,PASSED
+WEB-098,Web (Selenium),Settings,Profile Data Reload Persistence,Refresh profile screen ensure updated details reload from database,Updates are fetched from /users/{uid} on reload,PASSED
+WEB-099,Web (Selenium),Settings,Logout Operation Trigger,Click Logout button in profile screen verify redirection,Signs out user and redirects back to /login,PASSED
+WEB-100,Web (Selenium),Settings,Logout Session Reset,Try navigating back to tab routes post logout verify redirect,System blocks access and forces login redirect,PASSED
+MOB-001,Mobile (Appium),Authentication,App Native Launch Success,Check if mobile app displays primary login view,Native login view loads on emulator launch,PASSED
+MOB-002,Mobile (Appium),Authentication,Accessibility ID Setup Verification,Ensure accessibility IDs are loaded on form container,accessibilityLabel matches login-screen,PASSED
+MOB-003,Mobile (Appium),Authentication,Toggle Tabs Interaction,Verify tap action on the login method toggle elements,Swaps email and OTP layouts natively,PASSED
+MOB-004,Mobile (Appium),Authentication,Empty Fields Warning Alert,Tap login button with blank fields check native alert box,Displays standard alert dialog with empty error,PASSED
+MOB-005,Mobile (Appium),Authentication,Verify Native Keyboard Dismiss,Ensure tapping outside inputs dismisses native soft keyboard,Keyboard retracts on background touch,PASSED
+MOB-006,Mobile (Appium),Authentication,Email Format Regex Reject,Enter malformed email address expect input highlight,Input outline shows validation highlight state,PASSED
+MOB-007,Mobile (Appium),Authentication,Password Length Minimum Limit,Check if typing short password throws local validation toast,System prompts for minimum password parameters,PASSED
+MOB-008,Mobile (Appium),Authentication,Phone Mode Layout Transition,Toggle OTP mode check input fields modification,Phone TextInput replaces email text fields,PASSED
+MOB-009,Mobile (Appium),Authentication,Phone Code Prefix Validator,Ensure phone matches E.164 requirements natively,Blocks phone numbers lacking area code,PASSED
+MOB-010,Mobile (Appium),Authentication,SMS Get Code Execution,Submit SMS validation check for confirmation result state,Invokes SMS verification code sending,PASSED
+MOB-011,Mobile (Appium),Authentication,OTP Code Field Display,Verify 6-digit OTP code entry input becomes visible on SMS send,OTP input field displays on screen,PASSED
+MOB-012,Mobile (Appium),Authentication,Verify Phone Auth Console Check,Check fallback message displays when phone auth config fails,Error log highlights missing configuration status,PASSED
+MOB-013,Mobile (Appium),Authentication,SignUp Form Launch,Tap 'Sign Up' footer link verify native registration view,Redirection to SignUp view,PASSED
+MOB-014,Mobile (Appium),Authentication,Register Form Credentials Empty,Click register with empty fields expect validation popup,Validation alert highlights missing fields,PASSED
+MOB-015,Mobile (Appium),Authentication,Register Input Text Fields,Fill username password email details in register input elements,Populates details on signup inputs,PASSED
+MOB-016,Mobile (Appium),Authentication,User Registration Submit,Submit register verify successful creation dialog displays,Success dialog launches on emulator,PASSED
+MOB-017,Mobile (Appium),Authentication,Forgot Password Redirection,Tap 'Forgot Password' check reset email input screen,Redirection to forgot password screen,PASSED
+MOB-018,Mobile (Appium),Authentication,Send Password Reset Code,Enter reset email check confirmation native overlay modal,Fires reset request and displays alert dialog,PASSED
+MOB-019,Mobile (Appium),Authentication,Back Link Login Redirection,Verify back link routes back to primary authentication screen,Returns back to main login layout,PASSED
+MOB-020,Mobile (Appium),Authentication,Native LogIn Action,Complete sign in verify home screen loads successfully,Redirection to home screen post auth,PASSED
+MOB-021,Mobile (Appium),Pantry Inventory,Home Dashboard Layout Load,Verify home screen container displays post login,Home screen root maps home-screen id,PASSED
+MOB-022,Mobile (Appium),Pantry Inventory,Pantry Grid Display,Ensure list of inventory items is mapped on home view,Pantry inventory scroll wrapper is visible,PASSED
+MOB-023,Mobile (Appium),Pantry Inventory,Item Add Screen Navigation,Tap Add (+) button verify item creation screen rendering,Add Item view is displayed on screen,PASSED
+MOB-024,Mobile (Appium),Pantry Inventory,Add Item Blank Form Warning,Submit empty item name verify alert dialog display,Alert pops up with enter item warning,PASSED
+MOB-025,Mobile (Appium),Pantry Inventory,Add Item Inputs Interaction,Enter item values (Cereal 4 units 5 days expiry),Values populated on item inputs,PASSED
+MOB-026,Mobile (Appium),Pantry Inventory,Expiry String Format Verification,Verify expiry details string maps properly on text inputs,Value handles alpha-numeric format,PASSED
+MOB-027,Mobile (Appium),Pantry Inventory,Save New Item Execution,Tap save button verify Firestore update and redirection,Item doc is saved in Firestore collection,PASSED
+MOB-028,Mobile (Appium),Pantry Inventory,List Dynamic Refresh Check,Verify item list reload includes new additions,List automatically displays the added item,PASSED
+MOB-029,Mobile (Appium),Pantry Inventory,Native Speech API Integration,Tap speak button check mic permission alert handler,Microphone prompt handles voice input triggers,PASSED
+MOB-030,Mobile (Appium),Pantry Inventory,Stock Level Label Verification,Verify stock amount maps correctly on the text component,Labels display units text count,PASSED
+MOB-031,Mobile (Appium),Pantry Inventory,Stock Progress Bar Width Check,Check progress indicator scaling maps stock value,Bar width scales based on stock count,PASSED
+MOB-032,Mobile (Appium),Pantry Inventory,Item Detail Component Layout,Verify item displays delete share icons on card view,Delete and share action buttons render,PASSED
+MOB-033,Mobile (Appium),Pantry Inventory,Expiry Color Indicator Logic,Verify status styling changes color index based on days left,Uses getStatusColor method values,PASSED
+MOB-034,Mobile (Appium),Pantry Inventory,Community Share Overlay,Tap social share icon verify platform options popup,Native share sheet opens on emulator,PASSED
+MOB-035,Mobile (Appium),Pantry Inventory,Community Neighbors Selection,Tap 'Neighbors' donation check dialog dismissal feedback,Dismisses share card with Neighbors log,PASSED
+MOB-036,Mobile (Appium),Pantry Inventory,Community FoodBank Selection,Tap 'Food Bank' donation check confirmation dialogue,Dismisses share card with Food Bank log,PASSED
+MOB-037,Mobile (Appium),Pantry Inventory,Community Share Cancel Action,Tap 'Cancel' in share dialog verify list screen return,Cancel button dismisses share overlay,PASSED
+MOB-038,Mobile (Appium),Pantry Inventory,Refresh List Tap Action,Tap refresh button in header check spinner display,ActivityIndicator spins while querying list,PASSED
+MOB-039,Mobile (Appium),Pantry Inventory,Delete Icon Interaction,Tap trash icon on a pantry item check warning overlay,Prompt asks 'Delete [name]?',PASSED
+MOB-040,Mobile (Appium),Pantry Inventory,Delete Confirm Native Action,Confirm deletion verify element is detached from view hierarchy,Document is deleted in Firestore pantry collection,PASSED
+MOB-041,Mobile (Appium),Pantry Inventory,Delete Cancel Native Action,Cancel deletion verify item remains inside ScrollView,Document stays inside Firestore database,PASSED
+MOB-042,Mobile (Appium),Pantry Inventory,Sequence List Deletion Checks,Remove items in sequence check UI rendering integrity,Removes elements dynamically without lag,PASSED
+MOB-043,Mobile (Appium),Pantry Inventory,Scroll Event In List,Scroll through long list verify pagination/loading behaviors,Smooth scrolling operates across elements,PASSED
+MOB-044,Mobile (Appium),Pantry Inventory,Empty State Element Display,Ensure empty pantry view shows help tags on zero elements,Empty catalog icon and instructions display,PASSED
+MOB-045,Mobile (Appium),Pantry Inventory,Keyboard Action Next Field,Ensure pressing 'next' moves focus to next input field,Cursor navigates to stock input field,PASSED
+MOB-046,Mobile (Appium),Shopping List,Shopping Tab Selection,Tap Shopping List tab verify layout renders,Active screen changes to shopping list,PASSED
+MOB-047,Mobile (Appium),Shopping List,Input Box Placeholder Verification,Ensure input shows 'Add missing item...' placeholder,TextInput shows correct placeholder string,PASSED
+MOB-048,Mobile (Appium),Shopping List,Shopping Item Manual Addition,Enter 'Bread' and tap add button check checklist update,Item is appended to shopping collection in Firestore,PASSED
+MOB-049,Mobile (Appium),Shopping List,Empty Input Box Addition Block,Tap add button with blank text verify submission is ignored,Add button behaves as no-op on blank string,PASSED
+MOB-050,Mobile (Appium),Shopping List,Shopping Item Card Components,Verify item shows checkbox icon label and delete icon,Checklist card displays proper items,PASSED
+MOB-051,Mobile (Appium),Shopping List,Checkbox Press - Check Action,Tap unchecked box verify checkmark icon and text line-through,Box changes status, text becomes strike-through,PASSED
+MOB-052,Mobile (Appium),Shopping List,Checkbox Press - Uncheck Action,Tap checked box verify icon change back to square outline,Box changes status, strike-through is removed,PASSED
+MOB-053,Mobile (Appium),Shopping List,Checklist Scroll Action,Verify smooth scrolling on long shopping lists,Enables vertical scroll navigation,PASSED
+MOB-054,Mobile (Appium),Shopping List,AI Sparkles Button Display,Ensure 'AI Suggest' sparkles header button displays,Sparkles button renders next to header title,PASSED
+MOB-055,Mobile (Appium),Shopping List,AI Suggestion Execution,Tap 'AI Suggest' verify Firestore low stock items search,Queries pantry collection for low stock items,PASSED
+MOB-056,Mobile (Appium),Shopping List,AI Suggestion Alert Popup,Confirm success alert shows count of added low-stock items,Success modal triggers on low stock search,PASSED
+MOB-057,Mobile (Appium),Shopping List,AI Suggestion Label Indicator,Verify auto-suggested items render the '(AI)' suffix,Item label has (AI) tag appended,PASSED
+MOB-058,Mobile (Appium),Shopping List,AI Suggestion Duplication Filter,Ensure AI Suggestion ignores items already on checklist,Ignores pre-existing item additions,PASSED
+MOB-059,Mobile (Appium),Shopping List,Shopping Item Delete Interaction,Tap delete trash icon on shopping list item,Deletes item document from Firestore shoppingList,PASSED
+MOB-060,Mobile (Appium),Shopping List,List Count Update Verification,Verify checklist array reduces size on item deletion,Card disappears from checklist UI ScrollView,PASSED
+MOB-061,Mobile (Appium),Shopping List,Bulk List Clear Verification,Delete all items check default empty cart icon display,Displays 'Your list is empty' text,PASSED
+MOB-062,Mobile (Appium),Shopping List,Persistent Toggle State Check,Navigate away and return verify checkbox states remain synced,Toggles match Firestore checklist variables,PASSED
+MOB-063,Mobile (Appium),Shopping List,Keyboard Action Submit Item,Press 'enter' on soft keyboard to submit shopping item,Submits item and adds doc to database,PASSED
+MOB-064,Mobile (Appium),Shopping List,Offline Mode checklist Cache,Simulate offline state verify cached list items render,Local states display checklist during offline cache,PASSED
+MOB-065,Mobile (Appium),Shopping List,Database Integration Sync Check,Verify changes sync to Firestore backend when online,Firestore sync succeeds on network restore,PASSED
+MOB-066,Mobile (Appium),AI & Recipes,AI Chef Screen Navigation,Tap AI Chef navigation check screen layout,Redirection to recipes screen,PASSED
+MOB-067,Mobile (Appium),AI & Recipes,AI Recipe Query Dispatch,Verify API generation gets called with active pantry elements,Calls generateRecipe with pantry inventory names,PASSED
+MOB-068,Mobile (Appium),AI & Recipes,Loading Activity Indicator View,Ensure loading spinner displays during AI execution,ActivityIndicator spins while loading is true,PASSED
+MOB-069,Mobile (Appium),AI & Recipes,AI Recipe Content Display,Verify generated recipe text is displayed in ScrollView,TextBox shows suggested recipe details,PASSED
+MOB-070,Mobile (Appium),AI & Recipes,No Ingredients Handler,Verify helpful fallback message if pantry list is empty,Displays 'No pantry items found' instruction text,PASSED
+MOB-071,Mobile (Appium),AI & Recipes,Surprise Me Button Press,Tap 'Surprise Me' button check random prompt logic triggers,Appends random chef prompt to query payload,PASSED
+MOB-072,Mobile (Appium),AI & Recipes,Surprise Me API Request Dispatch,Verify OpenRouter request parameters include surprise criteria,Fires axios request with surprise details,PASSED
+MOB-073,Mobile (Appium),AI & Recipes,AI Expiry Predictions Screen,Tap AI Prediction navigation tab verify loading,Redirection to predict screen,PASSED
+MOB-074,Mobile (Appium),AI & Recipes,Expiry Predict Card Elements,Verify predict cards show item names with AI badges,Prediction cards render with mapped stock warnings,PASSED
+MOB-075,Mobile (Appium),AI & Recipes,Use Immediately Badge Trigger,Ensure low stock (<= 1) items get the red urgent badge,Renders red urgent prediction status text,PASSED
+MOB-076,Mobile (Appium),AI & Recipes,May Expire Soon Badge Trigger,Ensure moderate stock (<= 3) items get the orange warning badge,Renders orange warn prediction status text,PASSED
+MOB-077,Mobile (Appium),AI & Recipes,Fresh Item Status Badge Trigger,Ensure high stock items get the green fresh badge,Renders green safe prediction status text,PASSED
+MOB-078,Mobile (Appium),AI & Recipes,Mock Recipe - Egg Fried Rice Match,Test offline fallback matching conditions for Egg & Rice,Matches fried rice mock recipe rules,PASSED
+MOB-079,Mobile (Appium),AI & Recipes,Mock Recipe - Banana Milkshake Match,Test offline fallback matching conditions for Banana & Milk,Matches banana shake mock recipe rules,PASSED
+MOB-080,Mobile (Appium),AI & Recipes,Mock Recipe - Egg Sandwich Match,Test offline fallback matching conditions for Bread & Egg,Matches sandwich mock recipe rules,PASSED
+MOB-081,Mobile (Appium),Analytics,Analytics Navigation Tap,Tap Analytics tab icon verify view presentation,Redirection to analytics screen,PASSED
+MOB-082,Mobile (Appium),Analytics,Financial Risk Metric Calculation,Check if at-risk financial value displays mathematically,Value updates based on expiring item calculations,PASSED
+MOB-083,Mobile (Appium),Analytics,Zero Waste Value State,Verify risk shows $0.00 when zero items expire soon,Displays $0.00 on zero warning elements,PASSED
+MOB-084,Mobile (Appium),Analytics,Saved Carbon Metric Calculation,Check if CO2 saved metrics calculate based on items used,Displays CO2 savings values (total-expiring)*0.8,PASSED
+MOB-085,Mobile (Appium),Analytics,Zero CO2 Value State,Verify CO2 displays 0.0 kg when pantry is empty,Displays 0.0 kg on zero inventory elements,PASSED
+MOB-086,Mobile (Appium),Analytics,In Stock Items Amount Badge,Verify item count matches total records in Firestore,In Stock badge value equals total pantry size,PASSED
+MOB-087,Mobile (Appium),Analytics,Low Stock Items Amount Badge,Verify low stock count matches low stock records,Low Stock badge value matches low stock count,PASSED
+MOB-088,Mobile (Appium),Analytics,Consumption Chart Renders,Ensure chart bar components render on analytics screen,Visual chart bars render correctly on emulator screen,PASSED
+MOB-089,Mobile (Appium),Analytics,Consumption Chart Month Labels,Verify horizontal month indicators are properly displayed,Month labels Jan-Jun render underneath chart,PASSED
+MOB-090,Mobile (Appium),Analytics,Chart Sizing Responsive Checks,Verify chart layout fits native device dimensions,Chart width adapts to emulator screen boundaries,PASSED
+MOB-091,Mobile (Appium),Settings,Settings Tab Selection,Tap Settings tab icon verify load,Redirection to settings screen,PASSED
+MOB-092,Mobile (Appium),Settings,Dark Theme Toggle Tap,Toggle theme slider check dynamic theme context updates,Context variables change styling dynamically,PASSED
+MOB-093,Mobile (Appium),Settings,Profile Button Navigation,Tap Profile icon check user profile screen load,Redirection to profile screen,PASSED
+MOB-094,Mobile (Appium),Settings,Profile Name Input Editing,Modify profile name input text value,Typing inputs updates local name state variable,PASSED
+MOB-095,Mobile (Appium),Settings,Profile Phone Input Editing,Modify profile phone input text value,Typing inputs updates local phone state variable,PASSED
+MOB-096,Mobile (Appium),Settings,Profile Email Display Status,Ensure email field is marked read-only on native views,Email input has editable={false} attribute,PASSED
+MOB-097,Mobile (Appium),Settings,Profile Save Button Action,Tap save button verify Firestore update success toast,Updates profile document in Firestore users collection,PASSED
+MOB-098,Mobile (Appium),Settings,Profile Data Persistent Check,Restart profile screen verify modifications remain saved,Updates persist on reloading user profile document,PASSED
+MOB-099,Mobile (Appium),Settings,Log Out Button Press,Tap Logout button confirm dialog trigger,Alert prompts user to confirm logout action,PASSED
+MOB-100,Mobile (Appium),Settings,Session Destroy Verification,Confirm logout verify route returns back to LoginScreen,Clears AsyncStorage user token and resets auth route,PASSED

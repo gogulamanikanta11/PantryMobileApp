@@ -1,0 +1,434 @@
+[
+  {
+    "name": "Sign Up / Register",
+    "path": "Firebase Auth - createUserWithEmailAndPassword",
+    "method": "POST",
+    "params": {
+      "email": {
+        "type": "string",
+        "description": "User email address"
+      },
+      "password": {
+        "type": "string",
+        "description": "User password (minimum 6 characters)"
+      }
+    },
+    "response": {
+      "type": "UserCredential",
+      "description": "Firebase user credential object containing user info and token"
+    },
+    "files": [
+      "app/register.tsx"
+    ],
+    "dependencies": [
+      "firebase/auth"
+    ],
+    "group": "Authentication"
+  },
+  {
+    "name": "Email Login",
+    "path": "Firebase Auth - signInWithEmailAndPassword",
+    "method": "POST",
+    "params": {
+      "email": {
+        "type": "string",
+        "description": "User email address"
+      },
+      "password": {
+        "type": "string",
+        "description": "User password"
+      }
+    },
+    "response": {
+      "type": "UserCredential",
+      "description": "Firebase user credential object containing user info and token"
+    },
+    "files": [
+      "app/screens/LoginScreen.tsx"
+    ],
+    "dependencies": [
+      "firebase/auth",
+      "@react-native-async-storage/async-storage"
+    ],
+    "group": "Authentication"
+  },
+  {
+    "name": "OTP Request (Phone Auth)",
+    "path": "Firebase Auth - signInWithPhoneNumber",
+    "method": "POST",
+    "params": {
+      "phoneNumber": {
+        "type": "string",
+        "description": "Phone number with country code (e.g. +1...)"
+      },
+      "appVerifier": {
+        "type": "RecaptchaVerifier",
+        "description": "Firebase RecaptchaVerifier object (required on web, handled natively on mobile)"
+      }
+    },
+    "response": {
+      "type": "ConfirmationResult",
+      "description": "Firebase ConfirmationResult object to confirm OTP code"
+    },
+    "files": [
+      "app/screens/LoginScreen.tsx"
+    ],
+    "dependencies": [
+      "firebase/auth"
+    ],
+    "group": "Authentication"
+  },
+  {
+    "name": "OTP Verification",
+    "path": "Firebase ConfirmationResult - confirm",
+    "method": "POST",
+    "params": {
+      "verificationCode": {
+        "type": "string",
+        "description": "6-digit OTP code received on user's phone"
+      }
+    },
+    "response": {
+      "type": "UserCredential",
+      "description": "Firebase user credential object containing user info and token"
+    },
+    "files": [
+      "app/screens/LoginScreen.tsx"
+    ],
+    "dependencies": [
+      "firebase/auth",
+      "@react-native-async-storage/async-storage"
+    ],
+    "group": "Authentication"
+  },
+  {
+    "name": "Password Reset Email",
+    "path": "Firebase Auth - sendPasswordResetEmail",
+    "method": "POST",
+    "params": {
+      "email": {
+        "type": "string",
+        "description": "User email address"
+      }
+    },
+    "response": {
+      "type": "void",
+      "description": "Fulfills with no data on successful email dispatch"
+    },
+    "files": [
+      "app/forgot-password.tsx"
+    ],
+    "dependencies": [
+      "firebase/auth"
+    ],
+    "group": "Authentication"
+  },
+  {
+    "name": "Logout",
+    "path": "Firebase Auth - signOut",
+    "method": "POST",
+    "params": {},
+    "response": {
+      "type": "void",
+      "description": "Clears local auth session and local Storage token"
+    },
+    "files": [
+      "app/profile.tsx"
+    ],
+    "dependencies": [
+      "firebase/auth",
+      "@react-native-async-storage/async-storage"
+    ],
+    "group": "Authentication"
+  },
+  {
+    "name": "Get User Profile",
+    "path": "Firestore - /users/{uid}",
+    "method": "GET",
+    "params": {
+      "uid": {
+        "type": "string",
+        "description": "Firebase User UID (Path parameter)"
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name of the user" },
+        "phone": { "type": "string", "description": "Contact number" },
+        "email": { "type": "string", "description": "Profile email address" }
+      }
+    },
+    "files": [
+      "app/profile.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "User Profiles"
+  },
+  {
+    "name": "Update User Profile",
+    "path": "Firestore - /users/{uid}",
+    "method": "SET",
+    "params": {
+      "uid": {
+        "type": "string",
+        "description": "Firebase User UID (Path parameter)"
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Full name to update" },
+          "phone": { "type": "string", "description": "Phone number to update" },
+          "email": { "type": "string", "description": "Email address" }
+        }
+      }
+    },
+    "response": {
+      "type": "void",
+      "description": "Performs setDoc operation with merge: true to update fields"
+    },
+    "files": [
+      "app/profile.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "User Profiles"
+  },
+  {
+    "name": "List Pantry Items",
+    "path": "Firestore - /pantry",
+    "method": "GET",
+    "params": {},
+    "response": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Unique document ID" },
+          "name": { "type": "string", "description": "Name of the pantry item" },
+          "stock": { "type": "string", "description": "Quantity/stock count" },
+          "expiry": { "type": "string", "description": "Expiry duration in days" },
+          "createdAt": { "type": "Timestamp", "description": "Creation date" }
+        }
+      }
+    },
+    "files": [
+      "app/pantry.tsx",
+      "app/screens/PantryScreen.tsx",
+      "app/recipes.tsx",
+      "app/predict.tsx",
+      "app/shopping-list.tsx",
+      "app/alerts.tsx",
+      "app/analytics.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "Pantry Data"
+  },
+  {
+    "name": "Add Pantry Item",
+    "path": "Firestore - /pantry",
+    "method": "POST",
+    "params": {
+      "body": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "description": "Name of the item" },
+          "stock": { "type": "string", "description": "Stock units (string/number format)" },
+          "expiry": { "type": "string", "description": "Expiry time frame" },
+          "createdAt": { "type": "Date", "description": "Server/client timestamp" }
+        }
+      }
+    },
+    "response": {
+      "type": "DocumentReference",
+      "description": "Reference to the newly created Firestore document"
+    },
+    "files": [
+      "app/additem.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "Pantry Data"
+  },
+  {
+    "name": "Delete Pantry Item",
+    "path": "Firestore - /pantry/{id}",
+    "method": "DELETE",
+    "params": {
+      "id": {
+        "type": "string",
+        "description": "Unique document ID of the pantry item"
+      }
+    },
+    "response": {
+      "type": "void",
+      "description": "Performs deleteDoc operation on the document ID"
+    },
+    "files": [
+      "app/pantry.tsx",
+      "app/screens/PantryScreen.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "Pantry Data"
+  },
+  {
+    "name": "List Shopping List Items",
+    "path": "Firestore - /shoppingList",
+    "method": "GET",
+    "params": {},
+    "response": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Unique document ID" },
+          "name": { "type": "string", "description": "Name of the shopping item" },
+          "checked": { "type": "boolean", "description": "Completion checklist status" },
+          "createdAt": { "type": "Timestamp", "description": "Creation date" },
+          "autoGenerated": { "type": "boolean", "description": "Flag indicating if suggested by AI" }
+        }
+      }
+    },
+    "files": [
+      "app/shopping-list.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "Shopping List Data"
+  },
+  {
+    "name": "Add Shopping List Item",
+    "path": "Firestore - /shoppingList",
+    "method": "POST",
+    "params": {
+      "body": {
+        "type": "object",
+        "required": ["name", "checked", "createdAt"],
+        "properties": {
+          "name": { "type": "string", "description": "Name of the item" },
+          "checked": { "type": "boolean", "description": "Completion checklist status" },
+          "createdAt": { "type": "Date", "description": "Timestamp when added" },
+          "autoGenerated": { "type": "boolean", "description": "Flag indicating if suggested by AI based on low stock" }
+        }
+      }
+    },
+    "response": {
+      "type": "DocumentReference",
+      "description": "Reference to the newly created Firestore document"
+    },
+    "files": [
+      "app/shopping-list.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "Shopping List Data"
+  },
+  {
+    "name": "Delete Shopping List Item",
+    "path": "Firestore - /shoppingList/{id}",
+    "method": "DELETE",
+    "params": {
+      "id": {
+        "type": "string",
+        "description": "Unique document ID of the shopping list item"
+      }
+    },
+    "response": {
+      "type": "void",
+      "description": "Performs deleteDoc operation on the document ID"
+    },
+    "files": [
+      "app/shopping-list.tsx"
+    ],
+    "dependencies": [
+      "firebase/firestore",
+      "backend/firebase/config.ts"
+    ],
+    "group": "Shopping List Data"
+  },
+  {
+    "name": "OpenRouter Recipe Generation",
+    "path": "https://openrouter.ai/api/v1/chat/completions",
+    "method": "POST",
+    "params": {
+      "headers": {
+        "Authorization": { "type": "string", "description": "Bearer Token auth (API key)" },
+        "Content-Type": { "type": "string", "description": "application/json" }
+      },
+      "body": {
+        "model": { "type": "string", "description": "openai/gpt-3.5-turbo" },
+        "messages": {
+          "type": "array",
+          "description": "Chat payload with system prompt and list of pantry ingredients"
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "description": "OpenRouter chat completion object. Recipe content resides in choices[0].message.content"
+    },
+    "files": [
+      "backend/services/openrouter.ts"
+    ],
+    "dependencies": [
+      "axios"
+    ],
+    "group": "AI Services"
+  },
+  {
+    "name": "Google Gemini Recipe Generation",
+    "path": "Google Generative AI (gemini-2.0-flash)",
+    "method": "POST",
+    "params": {
+      "body": {
+        "prompt": { "type": "string", "description": "Chef prompt including the list of pantry ingredients" }
+      }
+    },
+    "response": {
+      "type": "string",
+      "description": "Generated recipe text from Gemini generative model response"
+    },
+    "files": [
+      "backend/services/gemini.ts"
+    ],
+    "dependencies": [
+      "@google/generative-ai"
+    ],
+    "group": "AI Services"
+  },
+  {
+    "name": "HuggingFace Recipe Generation (Fallback)",
+    "path": "Local Mock Service",
+    "method": "GET",
+    "params": {
+      "ingredients": { "type": "array", "description": "List of pantry ingredients to match mock conditions" }
+    },
+    "response": {
+      "type": "string",
+      "description": "Formatted recipe instructions based on specific ingredients (e.g. egg & rice, banana & milk, bread & egg)"
+    },
+    "files": [
+      "backend/services/huggingface.ts"
+    ],
+    "dependencies": [],
+    "group": "AI Services"
+  }
+]

@@ -6,7 +6,7 @@ Text,
 StyleSheet
 } from 'react-native';
 
-import { pantryItems } from '../../data/pantryData';
+import { pantryItems } from '../../backend/data/pantryData';
 
 export default function NotificationScreen(){
 

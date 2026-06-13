@@ -1,5 +1,6 @@
-import { Redirect } from 'expo-router';
+import DashboardScreen from '../screens/DashboardScreen';
 
-export default function Home() {
-  return <Redirect href="/login" />;
+export default function HomeTab() {
+  // This is the main screen of the Home tab
+  return <DashboardScreen />;
 }

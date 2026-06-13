@@ -1,0 +1,75 @@
+import axios from 'axios';
+import { generateRecipe } from '../backend/services/openrouter';
+
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('OpenRouter Recipe Generator Service', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should make successful POST call to OpenRouter completions endpoint', async () => {
+    const mockIngredients = ['rice', 'chicken', 'onion'];
+    const mockRecipeResponse = {
+      data: {
+        choices: [
+          {
+            message: {
+              content: '🍽 Chicken Biryani\n⏱ Cooking Time: 45 mins\n🥕 Ingredients: Chicken, Rice, Onion...',
+            },
+          },
+        ],
+      },
+    };
+
+    mockedAxios.post.mockResolvedValueOnce(mockRecipeResponse);
+
+    const result = await generateRecipe(mockIngredients);
+
+    expect(result).toContain('Chicken Biryani');
+    expect(mockedAxios.post).toHaveBeenCalledTimes(1);
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'https://openrouter.ai/api/v1/chat/completions',
+      expect.objectContaining({
+        model: 'openai/gpt-3.5-turbo',
+        messages: expect.arrayContaining([
+          expect.objectContaining({
+            content: expect.stringContaining('rice, chicken, onion'),
+          }),
+        ]),
+      }),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: expect.stringContaining('Bearer'),
+          'Content-Type': 'application/json',
+        }),
+      })
+    );
+  });
+
+  it('should capture response error structure from OpenRouter and fallback gracefully', async () => {
+    const apiError = {
+      response: {
+        data: {
+          error: {
+            message: 'Invalid API Key',
+          },
+        },
+      },
+    };
+    mockedAxios.post.mockRejectedValueOnce(apiError);
+
+    const result = await generateRecipe(['bread']);
+
+    expect(result).toBe('Invalid API Key');
+  });
+
+  it('should fallback to standard error message on network failure', async () => {
+    mockedAxios.post.mockRejectedValueOnce(new Error('Network Conn Error'));
+
+    const result = await generateRecipe(['banana']);
+
+    expect(result).toBe('Network Conn Error');
+  });
+});

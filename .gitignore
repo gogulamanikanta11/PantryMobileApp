@@ -41,3 +41,10 @@ app-example
 # generated native folders
 /ios
 /android
+
+# temp and log files
+*.log
+test_*.txt
+*.zip
+docx_extracted/
+tsc_output.txt

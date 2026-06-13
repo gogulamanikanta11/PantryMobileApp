@@ -32,7 +32,7 @@ colors={['#0B1020','#151B2F','#1E293B']}
 style={{flex:1}}
 >
 
-<ScrollView style={styles.container}>
+<ScrollView style={styles.container} testID="settings-screen">
 
 <Text style={styles.title}>
 ⚙️ Settings
@@ -42,7 +42,7 @@ style={{flex:1}}
 Customize your Smart Pantry AI
 </Text>
 
-<View style={styles.card}>
+<View style={styles.card} testID="dark-mode-section">
 
 <View style={styles.row}>
 
@@ -51,6 +51,7 @@ Customize your Smart Pantry AI
 </Text>
 
 <Switch
+testID="dark-mode-switch"
 value={dark}
 onValueChange={setDark}
 />
@@ -59,7 +60,7 @@ onValueChange={setDark}
 
 </View>
 
-<View style={styles.card}>
+<View style={styles.card} testID="notifications-section">
 
 <Text style={styles.label}>
 🔔 Notifications
@@ -71,7 +72,7 @@ Expiry alerts are enabled
 
 </View>
 
-<View style={styles.card}>
+<View style={styles.card} testID="voice-section">
 
 <Text style={styles.label}>
 🎤 Voice Assistant
@@ -83,7 +84,7 @@ Speech support enabled
 
 </View>
 
-<View style={styles.card}>
+<View style={styles.card} testID="about-section">
 
 <Text style={styles.label}>
 🤖 Smart Pantry AI

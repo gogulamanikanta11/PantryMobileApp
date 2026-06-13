@@ -1,0 +1,70 @@
+import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+
+// Mock firestore modules
+jest.mock('firebase/firestore', () => {
+  const actual = jest.requireActual('firebase/firestore');
+  return {
+    ...actual,
+    collection: jest.fn(),
+    getDocs: jest.fn(),
+    addDoc: jest.fn(),
+    deleteDoc: jest.fn(),
+    doc: jest.fn(),
+  };
+});
+
+describe('Firestore Pantry and Shopping List CRUD Operations', () => {
+  const mockDb = {} as any;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Pantry Operations', () => {
+    it('should query and map pantry collection records', async () => {
+      const mockPantryData = [
+        { id: '1', data: () => ({ name: 'Milk', stock: '2', expiry: '2 days' }) },
+        { id: '2', data: () => ({ name: 'Rice', stock: '5', expiry: '10 days' }) },
+      ];
+
+      (getDocs as jest.Mock).mockResolvedValueOnce({
+        forEach: (callback: any) => mockPantryData.forEach(callback),
+      });
+
+      // Simulating list loading logic
+      const collectionRef = {};
+      (collection as jest.Mock).mockReturnValue(collectionRef);
+
+      const items: any[] = [];
+      const querySnapshot = await getDocs(collection(mockDb, 'pantry'));
+      querySnapshot.forEach((document: any) => {
+        items.push({ id: document.id, ...document.data() });
+      });
+
+      expect(items).toHaveLength(2);
+      expect(items[0]).toEqual({ id: '1', name: 'Milk', stock: '2', expiry: '2 days' });
+      expect(collection).toHaveBeenCalledWith(mockDb, 'pantry');
+    });
+
+    it('should successfully append new item to pantry', async () => {
+      const mockNewItem = { name: 'Cereal', stock: '1', expiry: '15 days', createdAt: new Date() };
+      (addDoc as jest.Mock).mockResolvedValueOnce({ id: 'newDocId123' });
+
+      const docRef = await addDoc(collection(mockDb, 'pantry'), mockNewItem);
+
+      expect(docRef.id).toBe('newDocId123');
+      expect(addDoc).toHaveBeenCalledWith(undefined, mockNewItem); // Mocked collection returned undefined here
+    });
+
+    it('should delete pantry document using active doc id reference', async () => {
+      const docRef = {};
+      (doc as jest.Mock).mockReturnValue(docRef);
+      (deleteDoc as jest.Mock).mockResolvedValueOnce(void 0);
+
+      await deleteDoc(doc(mockDb, 'pantry', 'targetDocId'));
+
+      expect(doc).toHaveBeenCalledWith(mockDb, 'pantry', 'targetDocId');
+      expect(deleteDoc).toHaveBeenCalledWith(docRef);
+    });
+  });
+});

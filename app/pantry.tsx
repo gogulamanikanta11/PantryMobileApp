@@ -20,7 +20,7 @@ deleteDoc,
 doc
 } from 'firebase/firestore';
 
-import { db } from '../firebase/config';
+import { db } from '../backend/firebase/config';
 
 import { router } from 'expo-router';
 
