@@ -24,9 +24,17 @@ describe('Pantry Web - Login Flow', () => {
         await passInput.setValue(testPassword);
         await submitBtn.click();
 
-        // Accept the browser success alert
+        // Wait to see if an error message appears
+        await browser.pause(4000);
+        const errorMsg = await $('[data-testid="error-message"]');
+        if (await errorMsg.isExisting() && await errorMsg.isDisplayed()) {
+            const errorText = await errorMsg.getText();
+            throw new Error(`Registration failed with screen error: ${errorText}`);
+        }
+
+        // Accept the browser success alert if it opened
         try {
-            await browser.waitUntil(async () => await browser.isAlertOpen(), { timeout: 10000 });
+            await browser.waitUntil(async () => await browser.isAlertOpen(), { timeout: 3000 });
             await browser.acceptAlert();
         } catch (e) {
             console.log('No alert appeared or failed to accept alert:', e);
@@ -49,6 +57,14 @@ describe('Pantry Web - Login Flow', () => {
         await emailInput.setValue(testEmail);
         await passInput.setValue(testPassword);
         await loginBtn.click();
+
+        // Wait to see if a login error message appears
+        await browser.pause(4000);
+        const loginErrorMsg = await $('[data-testid="error-message"]');
+        if (await loginErrorMsg.isExisting() && await loginErrorMsg.isDisplayed()) {
+            const errorText = await loginErrorMsg.getText();
+            throw new Error(`Login failed with screen error: ${errorText}`);
+        }
 
         // Wait for redirect to dashboard/tabs
         await browser.waitUntil(
