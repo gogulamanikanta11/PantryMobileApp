@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test:web": "cd web-tests && npm test",
+    "test": "npm run test:web",
     "test:android": "cd appium-tests && npm test",
     "test:android:login": "cd appium-tests && npm run test:login",
     "test:android:home": "cd appium-tests && npm run test:home",
