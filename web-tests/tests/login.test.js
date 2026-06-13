@@ -2,6 +2,20 @@ const testEmail = `test-${Math.floor(Math.random() * 1000000)}@example.com`;
 const testPassword = 'password123';
 
 describe('Pantry Web - Login Flow', () => {
+    afterEach(async function() {
+        if (this.currentTest.state === 'failed') {
+            const fs = require('fs');
+            const path = require('path');
+            const docsDir = path.join(__dirname, '../../docs');
+            if (!fs.existsSync(docsDir)) {
+                fs.mkdirSync(docsDir, { recursive: true });
+            }
+            const screenshotPath = path.join(docsDir, 'error_screenshot.png');
+            await browser.saveScreenshot(screenshotPath);
+            console.log(`Saved failure screenshot to: ${screenshotPath}`);
+        }
+    });
+
     it('should show error for empty credentials', async () => {
         await browser.url('http://localhost:8081/login');
 
