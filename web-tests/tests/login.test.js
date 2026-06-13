@@ -67,9 +67,7 @@ describe('Pantry Web - Login Flow', () => {
         }
 
         // Wait for redirect to dashboard/tabs
-        await browser.waitUntil(
-            async () => (await browser.getUrl()).includes('/(tabs)'),
-            { timeout: 8000, timeoutMsg: 'Failed to redirect to dashboard' }
-        );
+        const homeScreen = await $('[data-testid="home-screen"]');
+        await homeScreen.waitForDisplayed({ timeout: 10000 });
     });
 });
