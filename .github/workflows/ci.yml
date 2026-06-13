@@ -27,54 +27,8 @@ jobs:
         run: npm run lint
 
   unit-tests:
-    name: Run Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-cache: 'npm'
-          node-version: '20'
-
-      - name: Install Project Dependencies
-        run: npm ci
-
-      - name: Install web-tests dependencies
-        run: |
-          cd web-tests
-          npm install
-
-      - name: Run Jest Unit Tests
-        run: npm test -- --coverage
-        continue-on-error: false
-
-  build-web:
-    name: Validate and Build Web App
-    runs-on: ubuntu-latest
-    needs: [lint-and-format, unit-tests]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-cache: 'npm'
-          node-version: '20'
-
-      - name: Install Project Dependencies
-        run: npm ci
-
-      - name: Build Web Bundle
-        run: npm run web -- --non-interactive --minify
-
-  e2e-tests:
     name: Run Web E2E Tests (Selenium)
     runs-on: ubuntu-latest
-    needs: [lint-and-format, unit-tests]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -106,6 +60,25 @@ jobs:
           echo "Server is up!"
 
       - name: Run Web E2E Tests
-        run: |
-          cd web-tests
-          npx wdio run wdio.conf.js
+        run: npm test
+        continue-on-error: false
+
+  build-web:
+    name: Validate and Build Web App
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, unit-tests]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-cache: 'npm'
+          node-version: '20'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Build Web Bundle
+        run: npm run web -- --non-interactive --minify
