@@ -42,6 +42,11 @@ jobs:
       - name: Install Project Dependencies
         run: npm ci
 
+      - name: Install web-tests dependencies
+        run: |
+          cd web-tests
+          npm install
+
       - name: Run Jest Unit Tests
         run: npm test -- --coverage
         continue-on-error: false
