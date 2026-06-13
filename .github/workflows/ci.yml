@@ -93,4 +93,4 @@ jobs:
         run: npm ci
 
       - name: Build Web Bundle
-        run: npm run web -- --non-interactive --minify
+        run: npx expo export --platform web
