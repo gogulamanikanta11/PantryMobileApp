@@ -113,6 +113,13 @@ export default function DashboardScreen() {
             color="#EC4899"
             onPress={() => router.push('/shopping-list')}
           />
+          <ToolButton
+            title="QA Analytics"
+            icon="shield-checkmark"
+            color="#06B6D4"
+            onPress={() => router.push('/qa-dashboard')}
+            testID="qa-analytics-button"
+          />
         </View>
 
         <View style={{height: 100}} />

@@ -13,6 +13,11 @@ StatusBar
 } from 'expo-status-bar';
 
 import 'react-native-reanimated';
+import { Platform } from 'react-native';
+
+if (Platform.OS === 'web') {
+  require('../global.css');
+}
 
 import {
 useColorScheme
