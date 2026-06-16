@@ -21,7 +21,7 @@ jobs:
           node-version: '20'
 
       - name: Install Project Dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run ESLint
         run: npm run lint
@@ -40,12 +40,12 @@ jobs:
           node-version: '20'
 
       - name: Install Project Dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Install web-tests dependencies
         run: |
           cd web-tests
-          npm install
+          npm install --legacy-peer-deps
 
       - name: Start Expo Web Server
         run: |
@@ -90,7 +90,7 @@ jobs:
           node-version: '20'
 
       - name: Install Project Dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build Web Bundle
         run: npx expo export --platform web
