@@ -20,9 +20,13 @@ describe('Pantry Web - Login Flow', () => {
         await browser.url('http://localhost:8081/login');
 
         const loginBtn = await $('[data-testid="login-button"]');
+        await loginBtn.waitForExist({ timeout: 5000 });
+        await loginBtn.waitForDisplayed({ timeout: 5000 });
         await loginBtn.click();
 
         const errorMsg = await $('[data-testid="error-message"]');
+        await errorMsg.waitForExist({ timeout: 5000 });
+        await errorMsg.waitForDisplayed({ timeout: 5000 });
         await expect(errorMsg).toBeDisplayed();
         await expect(errorMsg).toHaveTextContaining('Enter email and password');
     });
@@ -31,8 +35,16 @@ describe('Pantry Web - Login Flow', () => {
         await browser.url('http://localhost:8081/register');
 
         const emailInput = await $('[data-testid="register-email-input"]');
+        await emailInput.waitForExist({ timeout: 5000 });
+        await emailInput.waitForDisplayed({ timeout: 5000 });
+
         const passInput = await $('[data-testid="register-password-input"]');
-        const submitBtn = await $('[data-testid="register-submit-button"]');
+        await passInput.waitForExist({ timeout: 5000 });
+        await passInput.waitForDisplayed({ timeout: 5000 });
+
+        const submitBtn = await $('[data-testid="register-button"]');
+        await submitBtn.waitForExist({ timeout: 5000 });
+        await submitBtn.waitForDisplayed({ timeout: 5000 });
 
         await emailInput.setValue(testEmail);
         await passInput.setValue(testPassword);
@@ -65,8 +77,16 @@ describe('Pantry Web - Login Flow', () => {
         await browser.url('http://localhost:8081/login');
 
         const emailInput = await $('[data-testid="email-input"]');
+        await emailInput.waitForExist({ timeout: 5000 });
+        await emailInput.waitForDisplayed({ timeout: 5000 });
+
         const passInput = await $('[data-testid="password-input"]');
+        await passInput.waitForExist({ timeout: 5000 });
+        await passInput.waitForDisplayed({ timeout: 5000 });
+
         const loginBtn = await $('[data-testid="login-button"]');
+        await loginBtn.waitForExist({ timeout: 5000 });
+        await loginBtn.waitForDisplayed({ timeout: 5000 });
 
         await emailInput.setValue(testEmail);
         await passInput.setValue(testPassword);
@@ -82,6 +102,7 @@ describe('Pantry Web - Login Flow', () => {
 
         // Wait for redirect to dashboard/tabs
         const homeScreen = await $('[data-testid="home-screen"]');
+        await homeScreen.waitForExist({ timeout: 10000 });
         await homeScreen.waitForDisplayed({ timeout: 10000 });
     });
 });

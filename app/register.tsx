@@ -110,7 +110,7 @@ export default function RegisterScreen() {
         />
 
         <TouchableOpacity
-          testID="register-submit-button"
+          testID="register-button"
           style={[styles.button, loading && { backgroundColor: '#A5D6A7' }]}
           onPress={register}
           disabled={loading}
