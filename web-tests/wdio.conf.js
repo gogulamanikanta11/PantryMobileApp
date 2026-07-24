@@ -18,11 +18,11 @@ exports.config = {
     }],
     logLevel: 'info',
     bail: 0,
-    baseUrl: 'http://localhost:19006',
+    baseUrl: 'http://127.0.0.1:19006',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
-    services: [],
+    services: ['devtools'],
     framework: 'mocha',
     reporters: ['spec'],
     mochaOpts: {

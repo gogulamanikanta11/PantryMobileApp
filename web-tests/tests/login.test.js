@@ -17,7 +17,7 @@ describe('Pantry Web - Login Flow', () => {
     });
 
     it('should show error for empty credentials', async () => {
-        await browser.url('http://localhost:8081/login');
+        await browser.url('/login');
 
         const loginBtn = await $('[data-testid="login-button"]');
         await loginBtn.waitForExist({ timeout: 5000 });
@@ -32,7 +32,7 @@ describe('Pantry Web - Login Flow', () => {
     });
 
     it('should successfully register a new user', async () => {
-        await browser.url('http://localhost:8081/register');
+        await browser.url('/register');
 
         const emailInput = await $('[data-testid="register-email-input"]');
         await emailInput.waitForExist({ timeout: 5000 });
@@ -74,7 +74,7 @@ describe('Pantry Web - Login Flow', () => {
     });
 
     it('should successfully login and reach dashboard', async () => {
-        await browser.url('http://localhost:8081/login');
+        await browser.url('/login');
 
         const emailInput = await $('[data-testid="email-input"]');
         await emailInput.waitForExist({ timeout: 5000 });

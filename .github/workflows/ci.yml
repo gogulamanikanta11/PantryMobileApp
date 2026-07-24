@@ -53,7 +53,7 @@ jobs:
           CI: true
           EXPO_NO_BROWSER: 1
         run: |
-          npx expo start --web --port 19006 > expo.log 2>&1 &
+          npx expo start --web --host 127.0.0.1 --port 19006 > expo.log 2>&1 &
           echo $! > /tmp/expo.pid
 
       - name: Wait for Expo Web Server
