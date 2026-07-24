@@ -9,15 +9,16 @@ exports.config = {
         browserName: 'chrome',
         'goog:chromeOptions': {
             args: [
+                '--headless',
                 '--disable-gpu',
                 '--no-sandbox',
-                ...(process.env.CI ? ['--headless', '--disable-dev-shm-usage'] : [])
+                '--disable-dev-shm-usage'
             ]
         }
     }],
     logLevel: 'info',
     bail: 0,
-    baseUrl: 'http://localhost:8081',
+    baseUrl: 'http://localhost:19006',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
