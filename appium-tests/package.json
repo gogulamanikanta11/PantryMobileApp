@@ -4,15 +4,17 @@
   "description": "Appium E2E tests for Pantry Mobile App",
   "main": "index.js",
   "scripts": {
-    "test": "wdio run wdio.conf.js",
-    "test:login": "wdio run wdio.conf.js --spec tests/login.test.js",
-    "appium": "appium --port 4723"
+    "test": "node ./node_modules/@wdio/cli/bin/wdio.js run wdio.conf.js",
+    "test:login": "node ./node_modules/@wdio/cli/bin/wdio.js run wdio.conf.js --spec tests/login.test.js",
+    "appium": "node ./node_modules/appium/build/lib/main.js --port 4723"
   },
   "devDependencies": {
+    "@wdio/appium-service": "^8.0.0",
     "@wdio/cli": "^8.0.0",
     "@wdio/local-runner": "^8.0.0",
     "@wdio/mocha-framework": "^8.0.0",
     "@wdio/spec-reporter": "^8.0.0",
+    "appium": "^2.0.0",
     "webdriverio": "^8.0.0"
   }
 }
