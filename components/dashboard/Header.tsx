@@ -1,5 +1,5 @@
+import { RefreshCw, Server, ShieldCheck } from 'lucide-react-native';
 import React from 'react';
-import { Activity, ShieldCheck, Server, RefreshCw } from 'lucide-react';
 
 interface HeaderProps {
   onRefresh?: () => void;
@@ -32,7 +32,7 @@ export default function Header({ onRefresh, isRefreshing, lastUpdated }: HeaderP
           </p>
         </div>
       </div>
-      
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4 md:mt-0">
         {lastUpdated && (
           <div className="text-right hidden lg:block">
@@ -40,7 +40,7 @@ export default function Header({ onRefresh, isRefreshing, lastUpdated }: HeaderP
             <p className="text-xs text-slate-400 font-mono">{lastUpdated}</p>
           </div>
         )}
-        
+
         <div className="flex items-center gap-3 w-full sm:w-auto">
           {onRefresh && (
             <button
@@ -52,7 +52,7 @@ export default function Header({ onRefresh, isRefreshing, lastUpdated }: HeaderP
               Re-Run Suite
             </button>
           )}
-          
+
           <div className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 rounded-xl shadow-lg shadow-emerald-500/5 backdrop-blur-md w-full sm:w-auto">
             <ShieldCheck className="w-4 h-4 text-emerald-400 animate-bounce" />
             <span className="text-xs font-bold tracking-widest font-mono">DEPLOYABLE</span>

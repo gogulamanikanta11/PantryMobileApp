@@ -6,39 +6,120 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../backend/firebase/config';
+import { generateMealPlan } from '../backend/services/openrouter';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export default function MealPlannerScreen() {
   const [selectedDay, setSelectedDay] = useState('Mon');
+  const [loading, setLoading] = useState(false);
   const [plans, setPlans] = useState<any>({
     Mon: { breakfast: 'Oatmeal', lunch: 'Salad', dinner: 'Pasta' },
     Tue: { breakfast: 'Smoothie', lunch: 'Leftover Pasta', dinner: 'Stir Fry' },
   });
 
-  const handleAddPlan = (mealType: string) => {
-    Alert.prompt(
-      `Plan ${mealType}`,
-      `What are you having for ${mealType} on ${selectedDay}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Save',
-          onPress: (val) => {
-            setPlans({
-              ...plans,
-              [selectedDay]: {
-                ...(plans[selectedDay] || {}),
-                [mealType]: val
-              }
-            });
-          }
+  const handleAIFill = async () => {
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(db, 'pantry'));
+      const items: string[] = [];
+      querySnapshot.forEach((doc) => {
+        const data: any = doc.data();
+        if (data.name) items.push(data.name);
+      });
+
+      if (items.length === 0) {
+        const msg = 'No pantry items found. Please add items to your pantry first!';
+        if (Platform.OS === 'web') window.alert(msg);
+        else Alert.alert('Pantry Empty', msg);
+        setLoading(false);
+        return;
+      }
+
+      const rawPlan = await generateMealPlan(items);
+      let parsedPlan: any = null;
+      try {
+        parsedPlan = JSON.parse(rawPlan);
+      } catch (err) {
+        // Strip markdown if AI returned markdown JSON wrapper ```json ... ```
+        const jsonMatch = rawPlan.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsedPlan = JSON.parse(jsonMatch[0]);
         }
-      ]
-    );
+      }
+
+      if (parsedPlan && typeof parsedPlan === 'object') {
+        setPlans(parsedPlan);
+        const successMsg = 'Successfully generated a weekly meal plan with AI Chef!';
+        if (Platform.OS === 'web') window.alert(successMsg);
+        else Alert.alert('Success', successMsg);
+      } else {
+        throw new Error('Invalid JSON format returned from AI Chef.');
+      }
+    } catch (error: any) {
+      console.error(error);
+      const errMsg = 'Failed to generate AI meal plan. Reverting to smart mock generation.';
+      if (Platform.OS === 'web') window.alert(errMsg);
+      else Alert.alert('AI Error', errMsg);
+
+      // Fallback generation logic
+      const fallbackPlans = {
+        Mon: { breakfast: "🍳 Fried Eggs & Toast", lunch: "🥗 Tomato Salad Bowl", dinner: "🍚 Golden Vegetable Fried Rice" },
+        Tue: { breakfast: "🥞 Pancake Bites", lunch: "🍗 Savory Chicken Curry", dinner: "🥔 Crispy Roasted Potatoes" },
+        Wed: { breakfast: "🥣 Oatmeal Porridge", lunch: "🥪 Egg & Cheese Sandwich", dinner: "🍛 Pantry Veggie Curry" },
+        Thu: { breakfast: "🥑 Avocado Slices on Toast", lunch: "🍚 Golden Vegetable Fried Rice", dinner: "🍗 Savory Pantry Chicken Curry" },
+        Fri: { breakfast: "🍳 Fluffy Egg Scramble", lunch: "🥗 Fresh Tomato Salad", dinner: "🥔 Herbed Roasted Potatoes" },
+        Sat: { breakfast: "🥞 Golden Waffles", lunch: "🍗 Chicken Curry Rice", dinner: "🍲 Chef's Pantry Stew" },
+        Sun: { breakfast: "🍌 Fruit Bowl & Oats", lunch: "🍛 Vegetable Curry Mix", dinner: "🍳 Baked Frittata Slice" }
+      };
+      setPlans(fallbackPlans);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddPlan = (mealType: string) => {
+    const savePlan = (val: string) => {
+      if (val && val.trim().length > 0) {
+        setPlans((prev: any) => ({
+          ...prev,
+          [selectedDay]: {
+            ...(prev[selectedDay] || {}),
+            [mealType]: val
+          }
+        }));
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      const val = window.prompt(`What are you having for ${mealType} on ${selectedDay}?`, plans[selectedDay]?.[mealType] || '');
+      if (val !== null) {
+        savePlan(val);
+      }
+    } else {
+      Alert.prompt(
+        `Plan ${mealType}`,
+        `What are you having for ${mealType} on ${selectedDay}?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Save',
+            onPress: (val) => {
+              if (val) savePlan(val);
+            }
+          }
+        ],
+        'plain-text',
+        plans[selectedDay]?.[mealType] || ''
+      );
+    }
   };
 
   return (
@@ -79,9 +160,19 @@ export default function MealPlannerScreen() {
             onPress={() => handleAddPlan('dinner')}
           />
 
-          <TouchableOpacity style={styles.aiGenBtn}>
-            <Ionicons name="sparkles" size={20} color="white" />
-            <Text style={styles.aiGenText}>Auto-Fill Week with AI</Text>
+          <TouchableOpacity
+            style={[styles.aiGenBtn, loading && { opacity: 0.7 }]}
+            onPress={handleAIFill}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <>
+                <Ionicons name="sparkles" size={20} color="white" />
+                <Text style={styles.aiGenText}>Auto-Fill Week with AI</Text>
+              </>
+            )}
           </TouchableOpacity>
         </ScrollView>
       </View>

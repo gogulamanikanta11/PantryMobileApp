@@ -1,0 +1,4 @@
+
+> web-e2e-tests@1.0.0 test
+> npx wdio run wdio.conf.js
+

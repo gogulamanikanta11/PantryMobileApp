@@ -7,13 +7,20 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  KeyboardAvoidingView,
+  ScrollView
 } from 'react-native';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../backend/firebase/config';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../constants/theme';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
+  const [focusedField, setFocusedField] = useState<'email' | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleReset = async () => {
     if (!email) {
@@ -21,6 +28,7 @@ export default function ForgotPasswordScreen() {
       return;
     }
 
+    setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email.trim());
       if (Platform.OS === 'web') {
@@ -36,80 +44,138 @@ export default function ForgotPasswordScreen() {
     } catch (error: any) {
       console.log('RESET ERROR:', error);
       Alert.alert('Error', error?.message || 'Failed to send reset email');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Reset Password</Text>
-      <Text style={styles.subtitle}>
-        Enter your email address and we&apos;ll send you a link to reset your password.
-      </Text>
+    <LinearGradient
+      colors={[COLORS.background1, COLORS.background2, COLORS.background3]}
+      style={styles.gradientContainer}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View style={styles.glassCard}>
+            
+            {/* Header */}
+            <View style={styles.header}>
+              <View style={styles.logoBadge}>
+                <Ionicons name="key-outline" size={32} color={COLORS.primary} />
+              </View>
+              <Text style={styles.title}>Reset Password</Text>
+              <Text style={styles.subtitle}>
+                Enter your email address and we&apos;ll send you a link to reset your password.
+              </Text>
+            </View>
 
-      <TextInput
-        placeholder="Email Address"
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+            {/* Form */}
+            <View style={styles.form}>
+              {/* Email Input */}
+              <View style={[styles.inputWrapper, focusedField === 'email' && styles.inputWrapperFocused]}>
+                <Ionicons name="mail-outline" size={20} color={focusedField === 'email' ? COLORS.primary : 'rgba(255, 255, 255, 0.4)'} style={styles.inputIcon} />
+                <TextInput
+                  placeholder="Email Address"
+                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  style={styles.input}
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                  editable={!loading}
+                />
+              </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleReset}>
-        <Text style={styles.buttonText}>Send Reset Link</Text>
-      </TouchableOpacity>
+              {/* Reset Button */}
+              <TouchableOpacity style={styles.primaryButton} onPress={handleReset} disabled={loading}>
+                <Text style={styles.buttonText}>{loading ? 'Sending...' : 'Send Reset Link'}</Text>
+              </TouchableOpacity>
+            </View>
 
-      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-        <Text style={styles.backText}>Back to Login</Text>
-      </TouchableOpacity>
-    </View>
+            {/* Back Button */}
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <Text style={styles.backText}>Back to Login</Text>
+            </TouchableOpacity>
+
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'green',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  input: {
+  gradientContainer: { flex: 1 },
+  container: { flex: 1 },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+  glassCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: 24,
+    padding: 25,
     borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 15,
-    borderRadius: 10,
+    borderColor: COLORS.border,
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+    backdropFilter: 'blur(20px)'
+  },
+  header: { alignItems: 'center', marginBottom: 25 },
+  logoBadge: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)'
+  },
+  title: { fontSize: 28, fontWeight: 'bold', color: COLORS.text, textAlign: 'center' },
+  subtitle: { textAlign: 'center', marginTop: 10, color: COLORS.subtext, fontSize: 14, lineHeight: 20 },
+  form: { width: '100%' },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 14,
+    paddingHorizontal: 16,
     marginBottom: 20,
+    height: 56
   },
-  button: {
-    backgroundColor: 'green',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
+  inputWrapperFocused: {
+    borderColor: COLORS.primary,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)'
   },
-  buttonText: {
-    color: 'white',
+  inputIcon: { marginRight: 12 },
+  input: {
+    flex: 1,
+    color: COLORS.text,
     fontSize: 16,
-    fontWeight: 'bold',
+    height: '100%'
   },
-  backButton: {
-    marginTop: 20,
+  primaryButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 16,
+    borderRadius: 14,
     alignItems: 'center',
+    marginTop: 10,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5
   },
-  backText: {
-    color: '#666',
-    fontSize: 14,
-  },
+  buttonText: { color: COLORS.text, fontWeight: 'bold', fontSize: 16 },
+  backButton: { marginTop: 25, alignItems: 'center' },
+  backText: { color: COLORS.subtext, fontSize: 14, fontWeight: '500' }
 });

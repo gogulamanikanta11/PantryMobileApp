@@ -1,0 +1,8 @@
+error: pathspec 'GitHub' did not match any file(s) known to git
+error: pathspec 'Actions' did not match any file(s) known to git
+error: pathspec 'workflow' did not match any file(s) known to git
+error: pathspec 'and' did not match any file(s) known to git
+error: pathspec 'web' did not match any file(s) known to git
+error: pathspec 'E2E' did not match any file(s) known to git
+error: pathspec 'URL' did not match any file(s) known to git
+error: pathspec 'config' did not match any file(s) known to git

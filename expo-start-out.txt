@@ -1,0 +1,3 @@
+Starting project at C:\Users\manik\Downloads\PantryMobileApp
+› Port 19006 is being used by another process
+› Skipping dev server

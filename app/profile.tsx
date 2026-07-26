@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { signOut } from 'firebase/auth';
-import { auth, db } from '../backend/firebase/config';
-import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { signOut, updateProfile } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import {
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
+import { auth, db } from '../backend/firebase/config';
 
 export default function ProfileScreen() {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [focusedField, setFocusedField] = useState<'firstName' | 'lastName' | 'phone' | 'email' | null>(null);
   const email = auth.currentUser?.email || '';
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,14 @@ export default function ProfileScreen() {
     fetchProfile();
   }, []);
 
+  const getNameFromDisplayName = (displayName: string) => {
+    const parts = displayName.trim().split(' ');
+    return {
+      first: parts[0] || '',
+      last: parts.slice(1).join(' ') || '',
+    };
+  };
+
   const fetchProfile = async () => {
     if (!auth.currentUser) return;
     try {
@@ -34,8 +44,13 @@ export default function ProfileScreen() {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setName(data.name || '');
+        setFirstName(data.firstName || '');
+        setLastName(data.lastName || '');
         setPhone(data.phone || '');
+      } else if (auth.currentUser.displayName) {
+        const nameParts = getNameFromDisplayName(auth.currentUser.displayName);
+        setFirstName(nameParts.first);
+        setLastName(nameParts.last);
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -47,10 +62,17 @@ export default function ProfileScreen() {
     setLoading(true);
     try {
       await setDoc(doc(db, 'users', auth.currentUser.uid), {
-        name,
+        firstName,
+        lastName,
         phone,
         email: auth.currentUser.email
       }, { merge: true });
+
+      if (auth.currentUser.displayName !== `${firstName} ${lastName}`.trim()) {
+        await updateProfile(auth.currentUser, {
+          displayName: `${firstName} ${lastName}`.trim(),
+        });
+      }
 
       Alert.alert('Success', 'Profile updated successfully!');
     } catch (error: any) {
@@ -84,38 +106,57 @@ export default function ProfileScreen() {
             <View style={styles.avatarContainer}>
               <Text style={styles.avatarText}>👤</Text>
             </View>
-            <Text style={styles.userName}>{name || 'User'}</Text>
+            <Text style={styles.userName}>{`${firstName} ${lastName}`.trim() || 'User'}</Text>
             <Text style={styles.userEmail}>{email}</Text>
           </View>
 
           <View style={styles.form}>
-            <Text style={styles.inputLabel}>Full Name</Text>
-            <TextInput
-              testID="profile-name-input"
-              placeholder="Enter your name"
-              placeholderTextColor="#94A3B8"
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-            />
+            <View style={styles.rowGroup}>
+              <View style={[styles.inputColumn, focusedField === 'firstName' && styles.inputWrapperFocused]}>
+                <Text style={styles.inputLabel}>First Name</Text>
+                <TextInput
+                  testID="profile-first-name-input"
+                  placeholder="First Name"
+                  placeholderTextColor="#94A3B8"
+                  style={styles.input}
+                  value={firstName}
+                  onChangeText={setFirstName}
+                  onFocus={() => setFocusedField('firstName')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </View>
+              <View style={[styles.inputColumn, focusedField === 'lastName' && styles.inputWrapperFocused]}>
+                <Text style={styles.inputLabel}>Last Name</Text>
+                <TextInput
+                  testID="profile-last-name-input"
+                  placeholder="Last Name"
+                  placeholderTextColor="#94A3B8"
+                  style={styles.input}
+                  value={lastName}
+                  onChangeText={setLastName}
+                  onFocus={() => setFocusedField('lastName')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </View>
+            </View>
 
-            <Text style={styles.inputLabel}>Phone Number</Text>
-            <TextInput
-              testID="profile-phone-input"
-              placeholder="Enter phone number"
-              placeholderTextColor="#94A3B8"
-              style={styles.input}
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-            />
-
-            <Text style={styles.inputLabel}>Email Address (Read Only)</Text>
+            <Text style={styles.inputLabel}>Email Address</Text>
             <TextInput
               testID="profile-email-input"
               style={[styles.input, styles.disabledInput]}
               value={email}
               editable={false}
+            />
+
+            <Text style={styles.inputLabel}>Mobile Number</Text>
+            <TextInput
+              testID="profile-phone-input"
+              placeholder="Enter mobile number"
+              placeholderTextColor="#94A3B8"
+              style={styles.input}
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
             />
 
             <TouchableOpacity
@@ -187,22 +228,38 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
+    backgroundColor: 'rgba(15,23,42,0.65)',
+    borderRadius: 28,
+    padding: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(148,163,184,0.12)',
+  },
+  rowGroup: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 20,
+  },
+  inputColumn: {
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 16,
+    padding: 16,
+  },
+  inputWrapperFocused: {
+    borderColor: '#4F46E5',
   },
   inputLabel: {
     color: '#94A3B8',
     fontSize: 14,
     marginBottom: 8,
-    marginLeft: 4,
   },
   input: {
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-    padding: 16,
-    marginBottom: 20,
-    borderRadius: 16,
     color: 'white',
     fontSize: 16,
+    paddingVertical: 0,
+    minHeight: 40,
   },
   disabledInput: {
     opacity: 0.6,

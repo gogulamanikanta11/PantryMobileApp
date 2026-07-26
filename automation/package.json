@@ -1,0 +1,13 @@
+{
+  "name": "pantry-mobile-app-automation",
+  "version": "1.0.0",
+  "description": "Selenium E2E Enterprise Automation Suite",
+  "main": "tests/runner.js",
+  "scripts": {
+    "test": "node tests/runner.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.22.0",
+    "exceljs": "^4.4.0"
+  }
+}

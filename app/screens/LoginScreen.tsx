@@ -1,57 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView
-} from 'react-native';
-import {
-  signInWithEmailAndPassword,
-  signInWithPhoneNumber,
-  RecaptchaVerifier,
-  ConfirmationResult
+    signInWithEmailAndPassword
 } from 'firebase/auth';
+import React, { useState } from 'react';
+import {
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import { auth } from '../../backend/firebase/config';
+import { COLORS } from '../../constants/theme';
 
 export default function LoginScreen() {
-  const [loginMethod, setLoginMethod] = useState<'email' | 'phone'>('email');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Email States
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  // Phone/OTP States
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [otp, setOtp] = useState('');
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-
-  const recaptchaVerifier = useRef<any>(null);
-
-  // Initialize Recaptcha for Web
-  useEffect(() => {
-    if (Platform.OS === 'web' && !recaptchaVerifier.current) {
-      try {
-        recaptchaVerifier.current = new RecaptchaVerifier(auth, 'recaptcha-container', {
-          size: 'invisible',
-          callback: () => {
-            console.log('Recaptcha resolved');
-          }
-        });
-      } catch (err) {
-        console.error('Recaptcha init error:', err);
-      }
-    }
-  }, []);
+  const [showPassword, setShowPassword] = useState(false);
+  const [focusedField, setFocusedField] = useState<'email' | 'password' | null>(null);
 
   const handleEmailLogin = async () => {
     setError('');
@@ -72,98 +48,83 @@ export default function LoginScreen() {
     }
   };
 
-  const sendOtp = async () => {
-    setError('');
-    if (!phoneNumber || phoneNumber.length < 10) {
-      setError('Enter phone number with country code (e.g. +1...)');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // For Android native, Firebase often handles Recaptcha via safety net/play services.
-      // For Web, we use the verifier we initialized.
-      const appVerifier = recaptchaVerifier.current;
-      const confirmation = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
-      setConfirmationResult(confirmation);
-      Alert.alert('Success', 'OTP sent to ' + phoneNumber);
-    } catch (err: any) {
-      console.error(err);
-      setError('Error: ' + (err.message || 'Check if Phone Auth is enabled in Firebase Console.'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const verifyOtp = async () => {
-    if (!otp || otp.length < 6) {
-      setError('Enter the 6-digit OTP code');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      if (confirmationResult) {
-        await confirmationResult.confirm(otp);
-        await AsyncStorage.setItem('user', phoneNumber);
-        router.replace('/(tabs)');
-      }
-    } catch {
-      setError('Invalid OTP code. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+    <LinearGradient
+      colors={[COLORS.background1, COLORS.background2, COLORS.background3]}
+      style={styles.gradientContainer}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View testID="login-screen">
-          <Text style={styles.title}>Smart Pantry AI</Text>
-          <Text style={styles.subtitle}>Smart management for your kitchen</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <View testID="login-screen" style={styles.glassCard}>
+            
+            {/* Header */}
+            <View style={styles.header}>
+              <View style={styles.logoBadge}>
+                <Ionicons name="restaurant" size={32} color={COLORS.primary} />
+              </View>
+              <Text style={styles.title}>Smart Pantry AI</Text>
+              <Text style={styles.subtitle}>Smart management for your kitchen</Text>
+            </View>
 
-          {/* Toggle between Email and Phone */}
-          <View style={styles.toggleContainer}>
-            <TouchableOpacity
-              style={[styles.toggleButton, loginMethod === 'email' && styles.toggleActive]}
-              onPress={() => { setLoginMethod('email'); setError(''); }}
-            >
-              <Text style={[styles.toggleText, loginMethod === 'email' && styles.toggleTextActive]}>Email</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.toggleButton, loginMethod === 'phone' && styles.toggleActive]}
-              onPress={() => { setLoginMethod('phone'); setError(''); }}
-            >
-              <Text style={[styles.toggleText, loginMethod === 'phone' && styles.toggleTextActive]}>OTP Login</Text>
-            </TouchableOpacity>
-          </View>
+            {/* Sign In Options */}
+            <View style={styles.toggleContainer}>
+              <View style={[styles.toggleButton, styles.toggleActive]}>
+                <Text style={[styles.toggleText, styles.toggleTextActive]}>Sign In</Text>
+              </View>
+            </View>
 
-          {error ? (
-            <Text testID="error-message" style={styles.errorText}>{error}</Text>
-          ) : null}
+            {/* Error Message */}
+            {error ? (
+              <View style={styles.errorBox}>
+                <Ionicons name="alert-circle" size={20} color={COLORS.danger} />
+                <Text testID="error-message" style={styles.errorText}>{error}</Text>
+              </View>
+            ) : null}
 
-          {loginMethod === 'email' ? (
-            /* Email Login */
-            <View>
-              <TextInput
-                testID="email-input"
-                placeholder="Email Address"
-                style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-              />
-              <TextInput
-                testID="password-input"
-                placeholder="Password"
-                secureTextEntry
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-              />
+            <View style={styles.form}>
+              {/* Email Input */}
+              <View style={[styles.inputWrapper, focusedField === 'email' && styles.inputWrapperFocused]}>
+                <Ionicons name="mail-outline" size={20} color={focusedField === 'email' ? COLORS.primary : 'rgba(255, 255, 255, 0.4)'} style={styles.inputIcon} />
+                <TextInput
+                  testID="email-input"
+                  placeholder="Email Address"
+                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  style={styles.input}
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  onFocus={() => setFocusedField('email')}
+                  onBlur={() => setFocusedField(null)}
+                />
+              </View>
+
+              {/* Password Input */}
+              <View style={[styles.inputWrapper, focusedField === 'password' && styles.inputWrapperFocused]}>
+                <Ionicons name="lock-closed-outline" size={20} color={focusedField === 'password' ? COLORS.primary : 'rgba(255, 255, 255, 0.4)'} style={styles.inputIcon} />
+                <TextInput
+                  testID="password-input"
+                  placeholder="Password"
+                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  secureTextEntry={!showPassword}
+                  style={[styles.input, { flex: 1 }]}
+                  value={password}
+                  onChangeText={setPassword}
+                  onFocus={() => setFocusedField('password')}
+                  onBlur={() => setFocusedField(null)}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                  <Ionicons
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="rgba(255, 255, 255, 0.4)"
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {/* Login Button */}
               <TouchableOpacity
                 testID="login-button"
                 style={styles.primaryButton}
@@ -173,100 +134,120 @@ export default function LoginScreen() {
                 {loading ? <ActivityIndicator color="white" /> : <Text style={styles.buttonText}>Login</Text>}
               </TouchableOpacity>
             </View>
-          ) : (
-            /* Phone OTP Login */
-            <View>
-              {!confirmationResult ? (
-                <View>
-                  <TextInput
-                    placeholder="Phone Number (e.g. +91 9876543210)"
-                    style={styles.input}
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
-                    keyboardType="phone-pad"
-                  />
-                  <TouchableOpacity
-                    style={styles.primaryButton}
-                    onPress={sendOtp}
-                    disabled={loading}
-                  >
-                    {loading ? <ActivityIndicator color="white" /> : <Text style={styles.buttonText}>Get OTP</Text>}
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View>
-                  <Text style={styles.infoText}>OTP sent to {phoneNumber}</Text>
-                  <TextInput
-                    placeholder="Enter 6-digit Code"
-                    style={styles.input}
-                    value={otp}
-                    onChangeText={setOtp}
-                    keyboardType="number-pad"
-                    maxLength={6}
-                  />
-                  <TouchableOpacity
-                    style={styles.primaryButton}
-                    onPress={verifyOtp}
-                    disabled={loading}
-                  >
-                    {loading ? <ActivityIndicator color="white" /> : <Text style={styles.buttonText}>Verify OTP</Text>}
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => setConfirmationResult(null)} style={styles.backAction}>
-                    <Text style={styles.backLinkText}>Edit Phone Number</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+
+            {/* Footer Navigation */}
+            <View style={styles.footer}>
+              <TouchableOpacity onPress={() => router.push('/register')}>
+                <Text style={styles.footerLink}>Don&apos;t have an account? <Text style={styles.footerLinkHighlight}>Sign Up</Text></Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/forgot-password')} style={{ marginTop: 15 }}>
+                <Text style={[styles.footerLink, { color: COLORS.danger }]}>Forgot Password?</Text>
+              </TouchableOpacity>
             </View>
-          )}
 
-          {/* Recaptcha container for Web */}
-          {Platform.OS === 'web' && <div id="recaptcha-container"></div>}
-
-          <View style={styles.footer}>
-            <TouchableOpacity onPress={() => router.push('/register')}>
-              <Text style={styles.footerLink}>Don&apos;t have an account? Sign Up</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/forgot-password')} style={{ marginTop: 15 }}>
-              <Text style={[styles.footerLink, { color: '#EF4444' }]}>Forgot Password?</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 25 },
-  title: { fontSize: 32, fontWeight: 'bold', color: '#10B981', textAlign: 'center' },
-  subtitle: { textAlign: 'center', marginBottom: 30, color: '#64748B' },
+  gradientContainer: { flex: 1 },
+  container: { flex: 1 },
+  scrollContent: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+  glassCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: 24,
+    padding: 25,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
+    backdropFilter: 'blur(20px)'
+  },
+  header: { alignItems: 'center', marginBottom: 25 },
+  logoBadge: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)'
+  },
+  title: { fontSize: 28, fontWeight: 'bold', color: COLORS.text, textAlign: 'center' },
+  subtitle: { textAlign: 'center', marginTop: 5, color: COLORS.subtext, fontSize: 14 },
   toggleContainer: {
     flexDirection: 'row',
-    backgroundColor: '#F1F5F9',
-    borderRadius: 12,
-    padding: 5,
-    marginBottom: 25
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 25,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)'
   },
   toggleButton: { flex: 1, paddingVertical: 12, alignItems: 'center', borderRadius: 10 },
-  toggleActive: { backgroundColor: '#fff', elevation: 3 },
-  toggleText: { color: '#94A3B8', fontWeight: 'bold' },
-  toggleTextActive: { color: '#10B981' },
-  errorText: { color: '#EF4444', textAlign: 'center', marginBottom: 15, fontWeight: 'bold' },
-  infoText: { textAlign: 'center', marginBottom: 15, color: '#64748B', fontWeight: '500' },
-  input: {
+  toggleActive: { backgroundColor: COLORS.primary },
+  toggleText: { color: 'rgba(255, 255, 255, 0.5)', fontWeight: 'bold', fontSize: 15 },
+  toggleTextActive: { color: COLORS.text },
+  errorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 15,
-    fontSize: 16,
-    backgroundColor: '#F8FAFC'
+    borderColor: 'rgba(239, 68, 68, 0.25)'
   },
-  primaryButton: { backgroundColor: '#10B981', padding: 18, borderRadius: 12, alignItems: 'center' },
-  buttonText: { color: 'white', fontWeight: 'bold', fontSize: 18 },
-  footer: { marginTop: 35, alignItems: 'center' },
-  footerLink: { color: '#10B981', fontWeight: '600', fontSize: 15 },
+  errorText: { color: COLORS.danger, marginLeft: 10, fontWeight: '600', flex: 1, fontSize: 14 },
+  infoText: { textAlign: 'center', marginBottom: 15, color: COLORS.subtext, fontWeight: '500' },
+  form: { width: '100%' },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    marginBottom: 15,
+    height: 56
+  },
+  inputWrapperFocused: {
+    borderColor: COLORS.primary,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)'
+  },
+  inputIcon: { marginRight: 12 },
+  input: {
+    flex: 1,
+    color: COLORS.text,
+    fontSize: 16,
+    height: '100%'
+  },
+  eyeIcon: { padding: 4 },
+  primaryButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5
+  },
+  buttonText: { color: COLORS.text, fontWeight: 'bold', fontSize: 16 },
+  footer: { marginTop: 30, alignItems: 'center' },
+  footerLink: { color: COLORS.subtext, fontSize: 14, fontWeight: '500' },
+  footerLinkHighlight: { color: COLORS.primary, fontWeight: 'bold' },
   backAction: { marginTop: 15, alignItems: 'center' },
-  backLinkText: { color: '#94A3B8', textDecorationLine: 'underline' }
+  backLinkText: { color: COLORS.subtext, textDecorationLine: 'underline', fontSize: 14 }
 });

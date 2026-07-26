@@ -1,0 +1,102 @@
+name: Deploy Application + Live Selenium E2E Verification
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-and-test:
+    name: Build, Deploy & Selenium E2E
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stage 1 — Repository Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Stage 2 — Dependency Installation
+        run: |
+          npm ci --legacy-peer-deps
+          cd automation && npm install
+
+      - name: Stage 3 — Build Application
+        run: npx expo export --platform web --output-dir web-build
+
+      - name: Stage 4 — Static Analysis
+        run: npm run lint
+
+      - name: Stage 5 — Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web-build
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
+      - name: Stage 6 — Wait for Deployment
+        run: |
+          echo "Waiting 30 seconds for GitHub Pages deployment to complete..."
+          sleep 30
+
+      - name: Stage 7 — Deployment Verification
+        env:
+          BASE_URL: 'https://gogulamanikanta11.github.io/PantryMobileApp/'
+        run: node automation/utils/verifyDeploy.js
+
+      - name: Stage 8 — Run Selenium E2E Tests
+        env:
+          BASE_URL: 'https://gogulamanikanta11.github.io/PantryMobileApp/'
+        run: node automation/tests/runner.js
+
+      - name: Stage 11 — Upload Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selenium-e2e-reports
+          path: |
+            Test Results/
+            automation/logs/
+          retention-days: 30
+
+      - name: Stage 12 — Publish Summary
+        if: always()
+        run: |
+          if [ -f "Test Results/Summary/summary.md" ]; then
+            cat "Test Results/Summary/summary.md" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "# E2E Run summary file not found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Stage 13 — Store Historical Results
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Clone gh-pages branch to temp folder to copy history files
+          git clone --branch gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages-temp || exit 0
+          
+          mkdir -p gh-pages-temp/reports/latest
+          mkdir -p gh-pages-temp/reports/history/build-${{ github.run_number }}
+          
+          # Copy current outputs to folders
+          cp -r "Test Results"/* gh-pages-temp/reports/history/build-${{ github.run_number }}/ || true
+          cp -r "Test Results"/* gh-pages-temp/reports/latest/ || true
+          
+          cd gh-pages-temp
+          git add reports/
+          git commit -m "chore: archive test execution reports for build ${{ github.run_number }} [skip ci]" || true
+          git push origin gh-pages || true

@@ -1,0 +1,45 @@
+wdio.js [command]
+
+The `wdio` command allows you run and manage your WebdriverIO test suite.
+If no command is provided it calls the `run` command by default, so:
+
+$ wdio wdio.conf.js
+
+is the same as:
+$ wdio run wdio.conf.js
+
+For more information, visit: https://webdriver.io/docs/clioptions
+
+Commands:
+  wdio.js config                        Initialize WebdriverIO and setup configu
+                                        ration in your current project.
+  wdio.js install <type> <name>         Add a `reporter`, `service`, or `framewo
+                                        rk` to your WebdriverIO project. The com
+                                        mand installs the package from NPM, adds
+                                         it to your package.json and modifies th
+                                        e wdio.conf.js accordingly.
+  wdio.js repl <option> [capabilities]  Run WebDriver session in command line
+  wdio.js run <configPath>              Run your WDIO configuration file to init
+                                        ialize your tests. (default)
+
+Options:
+  --help     Show help                                                 [boolean]
+  --version  Show version number                                       [boolean]
+
+Examples:
+  wdio run wdio.conf.js --suite foobar      Run suite on testsuite "foobar"
+  wdio run wdio.conf.js --spec ./tests/e2e  Run suite on specific specs
+  /a.js --spec ./tests/e2e/b.js
+  wdio run wdio.conf.js --spec ./tests/e2e  Run scenario by line number
+  /a.feature:5
+  wdio run wdio.conf.js --spec ./tests/e2e  Run scenarios by line number
+  /a.feature:5:10
+  wdio run wdio.conf.js --spec ./tests/e2e  Run scenarios by line number in sing
+  /a.feature:5:10 --spec ./test/e2e/b.feat  le feature and another complete feat
+  ure                                       ure
+  wdio install reporter spec                Install @wdio/spec-reporter
+  wdio repl chrome -u <SAUCE_USERNAME> -k   Run repl in Sauce Labs cloud
+  <SAUCE_ACCESS_KEY>
+
+Documentation: https://webdriver.io
+@wdio/cli (v8.46.0)

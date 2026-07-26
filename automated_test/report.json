@@ -1,0 +1,10 @@
+[
+  {
+    "endpoint": "/api/pantry",
+    "method": "GET",
+    "expected_status": 200,
+    "actual_status": 200,
+    "response_time_ms": 0.0,
+    "validation_result": "PENDING_EXECUTION"
+  }
+]

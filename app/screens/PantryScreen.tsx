@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { router } from 'expo-router';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../backend/firebase/config';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+
+
 
 export default function PantryScreen() {
   const [items, setItems] = useState<any[]>([]);
@@ -39,21 +42,46 @@ export default function PantryScreen() {
   }, []);
 
   const handleDelete = (id: string, name: string) => {
-    Alert.alert('Remove Item', `Delete ${name}?`, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => {
-          await deleteDoc(doc(db, 'pantry', id));
-          loadItems();
-      }}
-    ]);
+    const performDelete = async () => {
+      try {
+        await deleteDoc(doc(db, 'pantry', id));
+        loadItems();
+      } catch (err) {
+        console.error("Delete failed:", err);
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      const confirmDelete = window.confirm(`Delete ${name}?`);
+      if (confirmDelete) {
+        performDelete();
+      }
+    } else {
+      Alert.alert('Remove Item', `Delete ${name}?`, [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: performDelete }
+      ]);
+    }
   };
 
   const handleShare = (name: string) => {
-    Alert.alert('Community Share', `Would you like to list ${name} for neighbors or donate it to a local food bank?`, [
-      { text: 'Neighbors' },
-      { text: 'Food Bank' },
-      { text: 'Cancel', style: 'cancel' }
-    ]);
+    if (Platform.OS === 'web') {
+      const option = window.confirm(`Would you like to list ${name} for Neighbors? (Cancel for Food Bank option)`);
+      if (option) {
+        window.alert(`Shared ${name} with Neighbors!`);
+      } else {
+        const option2 = window.confirm(`Donate ${name} to local Food Bank?`);
+        if (option2) {
+          window.alert(`Donated ${name} to local Food Bank!`);
+        }
+      }
+    } else {
+      Alert.alert('Community Share', `Would you like to list ${name} for neighbors or donate it to a local food bank?`, [
+        { text: 'Neighbors' },
+        { text: 'Food Bank' },
+        { text: 'Cancel', style: 'cancel' }
+      ]);
+    }
   };
 
   const getStatusColor = (stock: number) => {
@@ -129,7 +157,8 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 60, paddingBottom: 20 },
   title: { fontSize: 24, fontWeight: 'bold', color: 'white' },
   glassCard: { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 20, padding: 16, marginBottom: 15, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  itemImage: { width: 50, height: 50, borderRadius: 10, marginRight: 15, backgroundColor: 'rgba(255,255,255,0.05)' },
   actionRow: { flexDirection: 'row' },
   iconBtn: { marginLeft: 15, padding: 5 },
   itemName: { fontSize: 18, fontWeight: 'bold', color: 'white' },

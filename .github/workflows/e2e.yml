@@ -1,0 +1,316 @@
+name: Scale E2E suites to 2090 test cases with robust Selenium/Appium/API/Load
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *' # Run daily at 2:00 AM UTC
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  lint-and-format:
+    name: Lint and Format Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Root Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Eslint
+        run: npm run lint
+
+  selenium-tests:
+    name: Selenium — Website Tests (420)
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: |
+          npm ci --legacy-peer-deps
+          cd web-tests && npm install --legacy-peer-deps
+
+      - name: Run Selenium Tests
+        env:
+          BASE_URL: 'https://gogulamanikanta11.github.io/PantryMobileApp/'
+        run: |
+          cd web-tests
+          npm test
+
+      - name: Upload Selenium Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-results
+          path: reports/selenium-results.json
+          retention-days: 30
+
+  appium-tests:
+    name: Appium — Android Tests (470)
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Project & Appium Dependencies
+        run: |
+          npm ci --legacy-peer-deps
+          cd appium-tests && npm install --legacy-peer-deps
+
+      - name: Build Android Debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Verify APK Build Output
+        run: |
+          ls -al android/app/build/outputs/apk/debug
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Start Android Emulator and Execute Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          target: google_apis
+          emulator-name: test-emulator
+          force-avd-creation: true
+          disable-animations: true
+          script: |
+            npm run test:android
+
+      - name: Upload Appium Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-results
+          path: reports/appium-results.json
+          retention-days: 30
+
+  api-tests:
+    name: Unit Tests — API (300)
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Root Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run API Unit Tests
+        run: npm run test:api
+
+      - name: Upload API Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-results
+          path: reports/api-results.json
+          retention-days: 30
+
+  validation-tests:
+    name: Validation Tests (300)
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Root Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Validation Tests
+        run: npm run test:validation
+
+      - name: Upload Validation Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-results
+          path: reports/validation-results.json
+          retention-days: 30
+
+  deploy-status-tests:
+    name: Deployment Status (300)
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Root Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Deployment Verification
+        env:
+          BASE_URL: 'https://gogulamanikanta11.github.io/PantryMobileApp/'
+        run: npm run test:deploy
+
+      - name: Upload Deployment Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-results
+          path: reports/deployment-results.json
+          retention-days: 30
+
+  load-tests:
+    name: Load Testing — Performance (300)
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Root Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Concurrent Load Testing
+        run: npm run test:load
+
+      - name: Upload Load Results Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-results
+          path: reports/load-results.json
+          retention-days: 30
+
+  compile-master-report:
+    name: Compile Master Report & Deploy
+    runs-on: ubuntu-latest
+    needs: [selenium-tests, appium-tests, api-tests, validation-tests, deploy-status-tests, load-tests]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Root Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build Web Bundle
+        run: npx expo export --platform web --output-dir web-build
+
+      - name: Checkout Existing gh-pages branch for history
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages-temp
+
+      - name: Prepare reports history structure
+        run: |
+          mkdir -p web-build/reports/history
+          if [ -d "gh-pages-temp/reports/latest" ]; then
+            echo "[+] Archiving previous latest report to history build-${{ github.run_number }}"
+            mkdir -p web-build/reports/history/build-${{ github.run_number }}
+            cp -r gh-pages-temp/reports/latest/* web-build/reports/history/build-${{ github.run_number }}/
+          fi
+          if [ -d "gh-pages-temp/reports/history" ]; then
+            echo "[+] Copying historical builds history to build folder"
+            cp -r gh-pages-temp/reports/history/* web-build/reports/history/
+          fi
+
+      - name: Download all results artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports-temp
+
+      - name: Move artifacts to reports directory
+        run: |
+          mkdir -p reports
+          cp reports-temp/selenium-results/* reports/ || true
+          cp reports-temp/appium-results/* reports/ || true
+          cp reports-temp/api-results/* reports/ || true
+          cp reports-temp/validation-results/* reports/ || true
+          cp reports-temp/deployment-results/* reports/ || true
+          cp reports-temp/load-results/* reports/ || true
+          ls -la reports/
+
+      - name: Execute Reports Compiler
+        run: node scripts/compile_master_report.js
+
+      - name: Copy Excel and HTML Reports to Artifacts Folder
+        run: |
+          mkdir -p docs
+          cp -r web-build/reports/latest/Excel/* docs/ || true
+          cp -r web-build/reports/latest/HTML/* docs/ || true
+          cp -r web-build/reports/latest/Summary/* docs/ || true
+
+      - name: Upload Master Reports Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: master-test-reports
+          path: |
+            docs/*.xlsx
+            docs/*.html
+            docs/*.json
+            docs/*.md
+          retention-days: 30
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web-build
+          publish_branch: gh-pages
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
+      - name: Publish GitHub Action Summary
+        run: |
+          cat docs/summary.md >> $GITHUB_STEP_SUMMARY

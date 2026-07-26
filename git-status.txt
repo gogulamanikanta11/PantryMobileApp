@@ -1,0 +1,58 @@
+ M .github/workflows/ci.yml
+ D app/(tabs)/explore.tsx
+ M app/_layout.tsx
+ M app/forgot-password.tsx
+ M app/profile.tsx
+ M app/qa-dashboard.tsx
+ M app/register.tsx
+ M app/screens/LoginScreen.tsx
+ D appium-tests/tests/pantry.spec.js
+ M components/dashboard/CategoryCard.tsx
+ M components/dashboard/Header.tsx
+ M docs/test_report.csv
+ M package-lock.json
+ M package.json
+ M scripts/generate_excel.js
+ M web-tests/package-lock.json
+ M web-tests/tests/login.test.js
+ D web-tests/tests/pantry.spec.js
+ M web-tests/wdio.conf.js
+?? app/index.tsx
+?? appium-tests/package-lock.json
+?? appium-tests/tests/pantry.test.js
+?? automated_test/README.md
+?? automated_test/api_runner.py
+?? automated_test/endpoint_catalog.py
+?? automated_test/generate_excel.js
+?? automated_test/input.json
+?? automated_test/latency_measurements.py
+?? automated_test/report.json
+?? automated_test/request_tests.py
+?? automated_test/response_schema_tests.py
+?? automated_test/status_code_tests.py
+?? docs/error_screenshot.png
+?? expo-start-err.txt
+?? expo-start-out.txt
+?? expo_local.txt
+?? git-diff-err.txt
+?? git-diff.txt
+?? git-log-err.txt
+?? git-log.txt
+?? git-push-err.txt
+?? git-push-out.txt
+?? git-status-err.txt
+?? git-status.txt
+?? run_expo_server.bat
+?? run_web.bat
+?? scripts/run_load_test.js
+?? web-tests/error-wdio.txt
+?? web-tests/error-web.txt
+?? web-tests/error.txt
+?? web-tests/output-wdio.txt
+?? web-tests/output-web.txt
+?? web-tests/output.txt
+?? web-tests/tests/pantry.test.js
+?? web-tests/wdio_help.txt
+?? web-tests/wdio_js_help.txt
+?? web-wdio-error.txt
+?? web-wdio-output.txt

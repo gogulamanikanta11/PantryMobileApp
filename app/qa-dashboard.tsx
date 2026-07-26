@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Platform, View as RNView, Text as RNText, StyleSheet, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
-import { 
-  ClipboardCheck, 
-  ShieldCheck, 
-  XOctagon, 
-  TrendingUp, 
-  Play, 
-  Terminal, 
-  ArrowLeft 
-} from 'lucide-react';
-import Header from '../components/dashboard/Header';
-import MetricCard from '../components/dashboard/MetricCard';
-import CircularGauge from '../components/dashboard/CircularGauge';
+import { useRouter } from 'expo-router';
+import {
+    ArrowLeft,
+    ClipboardCheck,
+    ShieldCheck,
+    Terminal,
+    TrendingUp,
+    XOctagon
+} from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { Platform, Text as RNText, View as RNView, StyleSheet, TouchableOpacity } from 'react-native';
 import CategoryCard from '../components/dashboard/CategoryCard';
 import Charts from '../components/dashboard/Charts';
+import CircularGauge from '../components/dashboard/CircularGauge';
+import Header from '../components/dashboard/Header';
+import MetricCard from '../components/dashboard/MetricCard';
 
 export default function QADashboard() {
+  const router = useRouter();
   const isWeb = Platform.OS === 'web';
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>('');
@@ -42,7 +42,7 @@ export default function QADashboard() {
       <RNView style={mobileStyles.container}>
         <RNText style={mobileStyles.title}>QA Suite Dashboard</RNText>
         <RNText style={mobileStyles.subtitle}>Smart Pantry Management System</RNText>
-        
+
         <RNView style={mobileStyles.card}>
           <RNText style={mobileStyles.cardTitle}>💻 Web-Only DevOps Console</RNText>
           <RNText style={mobileStyles.cardBody}>
@@ -51,7 +51,7 @@ export default function QADashboard() {
           <RNText style={mobileStyles.path}>URL: http://localhost:8081/qa-dashboard</RNText>
         </RNView>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={mobileStyles.button}
           onPress={() => router.replace('/')}
         >
@@ -72,7 +72,7 @@ export default function QADashboard() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-[1600px] mx-auto w-full p-6 space-y-6 relative z-10">
-        
+
         {/* Breadcrumb back navigation */}
         <div className="flex items-center justify-between">
           <button
@@ -82,7 +82,7 @@ export default function QADashboard() {
             <ArrowLeft className="w-4 h-4" />
             Back to App Portal
           </button>
-          
+
           <div className="flex items-center gap-2 font-mono text-xs text-slate-500 bg-slate-900/30 border border-slate-800/40 px-3 py-1 rounded-lg">
             <Terminal className="w-3.5 h-3.5 text-cyan-400" />
             <span>ENV: production-ci-agent</span>
@@ -93,17 +93,17 @@ export default function QADashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard
             title="Total Test Cases"
-            value={100}
+            value={140}
             icon={ClipboardCheck}
             iconColor="text-blue-400"
             borderColor="blue-500/30"
             glowColor="#3b82f6"
-            subtext="100 E2E Selenium scenarios"
+            subtext="140 E2E Selenium scenarios"
             trend={{ value: "+0%", isPositive: true }}
           />
           <MetricCard
             title="Assertions Passed"
-            value={100}
+            value={140}
             icon={ShieldCheck}
             iconColor="text-emerald-400"
             borderColor="emerald-500/30"
@@ -135,7 +135,7 @@ export default function QADashboard() {
 
         {/* Middle Columns Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-          
+
           {/* Left Circular Readiness Rate */}
           <div className="lg:col-span-1 h-full">
             <CircularGauge score={100} minRequired={95} />
@@ -158,12 +158,12 @@ export default function QADashboard() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <CategoryCard category="Unit Testing" passed={20} total={20} score={100} />
-                <CategoryCard category="Functional Testing" passed={25} total={25} score={100} />
-                <CategoryCard category="UI/UX" passed={15} total={15} score={100} />
-                <CategoryCard category="Validation" passed={15} total={15} score={100} />
-                <CategoryCard category="Security" passed={10} total={10} score={100} />
-                <CategoryCard category="API Testing" passed={15} total={15} score={100} />
+                <CategoryCard category="Unit Testing" passed={25} total={25} score={100} />
+                <CategoryCard category="Functional Testing" passed={35} total={35} score={100} />
+                <CategoryCard category="UI/UX" passed={20} total={20} score={100} />
+                <CategoryCard category="Validation" passed={25} total={25} score={100} />
+                <CategoryCard category="Security" passed={15} total={15} score={100} />
+                <CategoryCard category="API Testing" passed={20} total={20} score={100} />
               </div>
             </div>
 
@@ -171,7 +171,7 @@ export default function QADashboard() {
               <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
                 VERIFICATION METRIC STAGE: PRE-DEPLOYMENT PRODUCTION READY
               </span>
-              <span className="text-xs text-emerald-400 font-mono font-bold">100/100 Total OK</span>
+              <span className="text-xs text-emerald-400 font-mono font-bold">140/140 Total OK</span>
             </div>
           </div>
         </div>

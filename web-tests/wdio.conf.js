@@ -18,7 +18,7 @@ exports.config = {
     }],
     logLevel: 'info',
     bail: 0,
-    baseUrl: 'http://127.0.0.1:19006',
+    baseUrl: process.env.BASE_URL || 'https://gogulamanikanta11.github.io/PantryMobileApp/',
     waitforTimeout: 10000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,

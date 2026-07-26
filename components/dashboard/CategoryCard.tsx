@@ -1,6 +1,5 @@
+import { CheckCircle2 } from "lucide-react-native";
 import React from 'react';
-import { CheckCircle2 } from 'lucide-react';
-
 interface CategoryCardProps {
   category: string;
   passed: number;
@@ -35,16 +34,16 @@ export default function CategoryCard({
             {passed}/{total}
           </span>
         </div>
-        
+
         {/* Progress Bar Track */}
         <div className="h-2 w-full bg-slate-950/80 rounded-full overflow-hidden border border-slate-900">
-          <div 
+          <div
             className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-1000 ease-out shadow-glow"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>
-      
+
       {/* PERFECT Badge Container */}
       <div className="flex flex-col items-end justify-center min-w-[90px]">
         <span className="text-sm font-extrabold text-white font-mono leading-none">

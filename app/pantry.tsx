@@ -9,7 +9,8 @@ Text,
 StyleSheet,
 ScrollView,
 TouchableOpacity,
-Alert
+Alert,
+Platform
 } from 'react-native';
 
 import {
@@ -29,6 +30,8 @@ import {
 Ionicons
 } from '@expo/vector-icons';
 import { COLORS } from '../constants/theme';
+
+
 
 export default function PantryScreen() {
 
@@ -74,16 +77,31 @@ loadItems();
 
 const deleteItem = async (id:string) => {
 
-await deleteDoc(
-doc(db,'pantry',id)
-);
+const performDelete = async () => {
+  await deleteDoc(doc(db,'pantry',id));
+  if (Platform.OS === 'web') {
+    window.alert('Item Removed');
+  } else {
+    Alert.alert('Deleted', 'Item Removed');
+  }
+  loadItems();
+};
 
-Alert.alert(
-'Deleted',
-'Item Removed'
-);
-
-loadItems();
+if (Platform.OS === 'web') {
+  const confirmDelete = window.confirm('Delete this item?');
+  if (confirmDelete) {
+    await performDelete();
+  }
+} else {
+  Alert.alert(
+    'Remove Item',
+    'Delete this item?',
+    [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Delete', style: 'destructive', onPress: performDelete }
+    ]
+  );
+}
 
 };
 
@@ -314,6 +332,14 @@ itemName:{
 fontSize:20,
 fontWeight:'bold',
 color:'white'
+},
+
+itemImage: {
+width: 50,
+height: 50,
+borderRadius: 10,
+marginRight: 15,
+backgroundColor: 'rgba(255,255,255,0.05)'
 },
 
 expiry:{
