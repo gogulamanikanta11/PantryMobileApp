@@ -105,12 +105,13 @@ jobs:
       - name: Start Android Emulator and Execute Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
-          arch: x86_64
-          target: google_apis
+          api-level: 30
+          arch: x86
+          target: default
           emulator-name: test-emulator
           force-avd-creation: true
           disable-animations: true
+          emulator-options: -no-window -gpu off -no-audio -no-boot-anim -camera-back none -camera-front none
           script: |
             npm run test:android
 
