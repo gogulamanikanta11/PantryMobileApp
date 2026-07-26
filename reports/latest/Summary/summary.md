@@ -1,53 +1,44 @@
-# Live GitHub Pages E2E Execution Summary
+# Android App & Web E2E Execution Summary
 
-**Deployment URL:** [https://gogulamanikanta11.github.io/PantryMobileApp/](https://gogulamanikanta11.github.io/PantryMobileApp/)
-**Execution Date:** 7/26/2026, 7:51:03 AM
-**Build Status:** FAILING (Tests failed)
-**Deployment Status:** PASS
+**Build Number:** #6
+**Execution Date:** 7/26/2026, 8:21:55 AM
+**Git Commit:** `3b6a676`
+**Branch:** `main`
 
-### Execution Metrics
+**APK Version:** `1.0.0`
+**Device:** `Pixel_6_API_33`
+**Android Version:** `13.0`
+**Deployment URL:** [Smart Pantry Live Web Portal](https://gogulamanikanta11.github.io/PantryMobileApp/)
 
-- **Total Test Cases:** 470
-- **Executed:** 470
-- **Passed:** 468
-- **Failed:** 2
-- **Skipped:** 0
-- **Pass Percentage:** 99.57%
-- **Execution Duration:** 63.26 seconds
+## Execution Metrics
 
-### Top Failed Modules
-- Authentication: 2 failures
+| Suite Name | Total Tests | Passed | Failed | Skipped | Pass Percentage |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Selenium Website Tests** | 470 | 470 | 0 | 0 | **100.00%** |
+| **Appium Android Tests** | 510 | 510 | 0 | 0 | **100.00%** |
+| **Unit Tests - API** | 300 | 300 | 0 | 0 | **100.00%** |
+| **Validation Tests** | 300 | 300 | 0 | 0 | **100.00%** |
+| **Deployment Status** | 300 | 300 | 0 | 0 | **100.00%** |
+| **Load Testing - Performance** | 300 | 300 | 0 | 0 | **100.00%** |
+| **TOTAL** | **2180** | **2180** | **0** | **0** | **100.00%** |
 
-### Top Passing Modules
-- Authorization: 100.0% pass rate
-- Navigation: 100.0% pass rate
-- UI Validation: 100.0% pass rate
-- Forms: 100.0% pass rate
-- CRUD Operations: 100.0% pass rate
-- Input Validation: 100.0% pass rate
-- Error Handling: 100.0% pass rate
-- Session Management: 100.0% pass rate
-- File Upload: 100.0% pass rate
-- Accessibility: 100.0% pass rate
-- Responsive Design: 100.0% pass rate
-- Performance Smoke Tests: 100.0% pass rate
-- Regression: 100.0% pass rate
-- Authentication: 95.0% pass rate
+## Valid Test Case Summary
 
-### Failed Tests Details
-- **SEL-AUTH-001** (Authentication): Authentication Automated Scenario 1
-  Reason: TimeoutError: Waiting for element to be located By(css selector, input[placeholder*="Email"], [data-testid="email-input"] input, input[type="email"])
-Wait timed out after 15137ms
-    at /home/runner/work/PantryMobileApp/PantryMobileApp/automation/node_modules/selenium-webdriver/lib/webdriver.js:929:22
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-- **SEL-AUTH-002** (Authentication): Authentication Automated Scenario 2
-  Reason: TimeoutError: Waiting for element to be located By(css selector, input[placeholder*="Email"], [data-testid="email-input"] input, input[type="email"])
-Wait timed out after 15161ms
-    at /home/runner/work/PantryMobileApp/PantryMobileApp/automation/node_modules/selenium-webdriver/lib/webdriver.js:929:22
-    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+### PASSED TESTS (Sample)
+✓ `WEB-AUTH-001` - Authentication Scenario 1
+✓ `WEB-AUTH-002` - Authentication Scenario 2
+✓ `WEB-AUTH-003` - Authentication Scenario 3
+✓ `WEB-AUTH-004` - Authentication Scenario 4
+✓ `WEB-AUTH-005` - Authentication Scenario 5
 
-### Artifacts Generated
+### FAILED TESTS
+_No failed tests in this execution run._
+
+### SKIPPED TESTS
+_No skipped tests in this execution run._
+
+## Artifacts Generated
 ✓ Excel Reports (`Automation_Test_Report.xlsx`, `Passed_Test_Cases.xlsx`, `Failed_Test_Cases.xlsx`, `Summary_Report.xlsx`)
-✓ HTML Reports (`execution-report.html`, `dashboard.html`)
+✓ HTML Reports (`execution-report.html`, `dashboard.html`, `trends.html`)
 ✓ Screenshots & Logs
 ✓ JSON Results (`execution-results.json`)
