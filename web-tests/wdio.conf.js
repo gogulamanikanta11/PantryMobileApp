@@ -3,6 +3,9 @@ exports.config = {
     specs: [
         './tests/**/*.test.js'
     ],
+    autoCompileOpts: {
+        autoCompile: false
+    },
     exclude: [],
     maxInstances: 10,
     capabilities: [{

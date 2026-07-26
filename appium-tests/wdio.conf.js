@@ -6,6 +6,10 @@ exports.config = {
 
   specs: ['./tests/**/*.test.js'],
 
+  autoCompileOpts: {
+    autoCompile: false
+  },
+
   capabilities: [{
     platformName: 'Android',
     'appium:deviceName': 'emulator-5554',         // Match your adb devices output
