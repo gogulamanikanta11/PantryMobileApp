@@ -107,7 +107,7 @@ jobs:
         with:
           api-level: 30
           arch: x86
-          target: default
+          target: google_apis
           emulator-name: test-emulator
           force-avd-creation: true
           disable-animations: true
